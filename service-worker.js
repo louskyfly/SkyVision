@@ -1,17 +1,18 @@
-const CACHE_NAME = 'skyvision-v3';
+const CACHE_NAME = 'skyvision-v4';
+const BASE = self.location.pathname.replace(/\/[^/]*$/, '/');
 const PRECACHE = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/js/app.js',
-  '/data/config.json',
-  '/data/sorties.json',
-  '/data/gallery.json',
-  '/data/drone.json',
-  '/data/future-sorties.json',
-  '/data/meteo.json',
-  '/manifest.json',
-  '/service-worker.js'
+  BASE,
+  BASE + 'index.html',
+  BASE + 'css/style.css',
+  BASE + 'js/app.js',
+  BASE + 'data/config.json',
+  BASE + 'data/sorties.json',
+  BASE + 'data/gallery.json',
+  BASE + 'data/drone.json',
+  BASE + 'data/future-sorties.json',
+  BASE + 'data/meteo.json',
+  BASE + 'manifest.json',
+  BASE + 'service-worker.js'
 ];
 
 self.addEventListener('install', e => {
@@ -40,7 +41,7 @@ self.addEventListener('fetch', e => {
           caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
         }
         return res;
-      }).catch(() => caches.match('/index.html'));
+      }).catch(() => caches.match(BASE + 'index.html'));
     })
   );
 });

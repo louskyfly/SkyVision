@@ -2,12 +2,12 @@
   "name": "SkyVision — Portfolio Drone",
   "short_name": "SkyVision",
   "description": "Portfolio de prises de vues aériennes par drone",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
   "orientation": "portrait-primary",
-  "scope": "/",
+  "scope": "./",
   "lang": "fr",
   "icons": [
     {
