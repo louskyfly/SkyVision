@@ -1,0 +1,190 @@
+{
+  "zones": [
+    {
+      "nom": "Aérodrome de Montpellier-Méditerranée",
+      "type": "interdit",
+      "categorie": "D",
+      "couleur": "#ef4444",
+      "description": "CTR Montpellier Méditerranée - Interdit sans autorisation DGAC",
+      "lat": 43.5762,
+      "lng": 3.9630,
+      "rayon": 3500,
+      "altitude_max": 1000,
+      "icone": "✈️"
+    },
+    {
+      "nom": "Aérodrome de Nîmes-Garons",
+      "type": "interdit",
+      "categorie": "D",
+      "couleur": "#ef4444",
+      "description": "CTR Nîmes-Garons - Interdit sans autorisation DGAC",
+      "lat": 43.7574,
+      "lng": 4.4163,
+      "rayon": 3000,
+      "altitude_max": 1000,
+      "icone": "✈️"
+    },
+    {
+      "nom": "Base aérienne 115 Orange-Caritat",
+      "type": "interdit",
+      "categorie": "D",
+      "couleur": "#ef4444",
+      "description": "Zone militaire - Interdit en permanence",
+      "lat": 44.1414,
+      "lng": 4.9017,
+      "rayon": 5000,
+      "altitude_max": 2000,
+      "icone": "🛡️"
+    },
+    {
+      "nom": "Parc National des Cévennes",
+      "type": "restreint",
+      "categorie": "C",
+      "couleur": "#f97316",
+      "description": "Parc national - Vol soumis à autorisation du parc",
+      "lat": 44.2000,
+      "lng": 3.6000,
+      "rayon": 15000,
+      "altitude_max": 300,
+      "icone": "🏔️"
+    },
+    {
+      "nom": "Réserve naturelle de la Grande-Motte",
+      "type": "restreint",
+      "categorie": "B",
+      "couleur": "#eab308",
+      "description": "Zone Natura 2000 - Vol déclaré obligatoire",
+      "lat": 43.5555,
+      "lng": 4.0833,
+      "rayon": 2000,
+      "altitude_max": 50,
+      "icone": "🦩"
+    },
+    {
+      "nom": "Étang de l'Or",
+      "type": "restreint",
+      "categorie": "B",
+      "couleur": "#eab308",
+      "description": "Zone Natura 2000 - Vol déclaré obligatoire, risque d'interférence aviaire",
+      "lat": 43.5100,
+      "lng": 4.0500,
+      "rayon": 3000,
+      "altitude_max": 50,
+      "icone": "🦆"
+    },
+    {
+      "nom": "Héliport de Montpellier",
+      "type": "restreint",
+      "categorie": "C",
+      "couleur": "#f97316",
+      "description": "Zone d'opérations hélicoptères - Autorisation préfectorale requise",
+      "lat": 43.5850,
+      "lng": 3.9400,
+      "rayon": 1000,
+      "altitude_max": 200,
+      "icone": "🚁"
+    },
+    {
+      "nom": "Plage du Grau-du-Roi",
+      "type": "restreint",
+      "categorie": "B",
+      "couleur": "#eab308",
+      "description": "Zone balnéaire - Vol interdit en période estivale (juin-septembre)",
+      "lat": 43.5300,
+      "lng": 4.1350,
+      "rayon": 1500,
+      "altitude_max": 50,
+      "icone": "🏖️"
+    },
+    {
+      "nom": "Lac de Salagou",
+      "type": "libre",
+      "categorie": "A",
+      "couleur": "#22c55e",
+      "description": "Zone libre - Vol possible jusqu'à 120m AGL, respecter la quiétude",
+      "lat": 43.6500,
+      "lng": 3.3800,
+      "rayon": 4000,
+      "altitude_max": 120,
+      "icone": "💧"
+    },
+    {
+      "nom": "Aigues-Mortes",
+      "type": "libre",
+      "categorie": "A",
+      "couleur": "#22c55e",
+      "description": "Zone libre autour de la ville - Vol possible, respecter les personnes",
+      "lat": 43.5667,
+      "lng": 4.1917,
+      "rayon": 2000,
+      "altitude_max": 120,
+      "icone": "🏰"
+    },
+    {
+      "nom": "La Grande-Motte",
+      "type": "libre",
+      "categorie": "A",
+      "couleur": "#22c55e",
+      "description": "Zone libre hors plage - Vol possible, ne pas survoler les baigneurs",
+      "lat": 43.5600,
+      "lng": 4.0800,
+      "rayon": 2000,
+      "altitude_max": 120,
+      "icone": "🌴"
+    },
+    {
+      "nom": "Saint-Guilhem-le-Désert",
+      "type": "libre",
+      "categorie": "A",
+      "couleur": "#22c55e",
+      "description": "Zone libre - Vol possible dans la vallée de l'Hérault",
+      "lat": 43.7350,
+      "lng": 3.6500,
+      "rayon": 3000,
+      "altitude_max": 120,
+      "icone": "⛪"
+    },
+    {
+      "nom": "Cirque de Navacelles",
+      "type": "libre",
+      "categorie": "A",
+      "couleur": "#22c55e",
+      "description": "Zone libre - Vol possible, panorama exceptionnel sur le cirque",
+      "lat": 43.7350,
+      "lng": 3.5050,
+      "rayon": 2000,
+      "altitude_max": 120,
+      "icone": "🏜️"
+    },
+    {
+      "nom": "Village de Minerve",
+      "type": "libre",
+      "categorie": "A",
+      "couleur": "#22c55e",
+      "description": "Zone libre - Vol possible sur les gorges de l'Orbieu et la CN)",
+      "lat": 43.3550,
+      "lng": 2.7450,
+      "rayon": 2000,
+      "altitude_max": 120,
+      "icone": "🏘️"
+    },
+    {
+      "nom": "Étang de Thau",
+      "type": "libre",
+      "categorie": "A",
+      "couleur": "#22c55e",
+      "description": "Zone libre autour de l'étang - Vol possible, ne pas survoler les ostréicultures",
+      "lat": 43.4200,
+      "lng": 3.6500,
+      "rayon": 4000,
+      "altitude_max": 120,
+      "icone": "🐚"
+    }
+  ],
+  "categories": {
+    "A": { "nom": "Zone libre", "couleur": "#22c55e", "description": "Vol libre jusqu'à 120m AGL" },
+    "B": { "nom": "Avec déclaration", "couleur": "#eab308", "description": "Déclaration préalable requise" },
+    "C": { "nom": "Avec autorisation", "couleur": "#f97316", "description": "Autorisation préfectorale requise" },
+    "D": { "nom": "Interdit", "couleur": "#ef4444", "description": "Vol strictement interdit" }
+  }
+}

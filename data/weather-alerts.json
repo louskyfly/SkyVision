@@ -1,0 +1,63 @@
+{
+  "alertes": [
+    {
+      "type": "vent_fort",
+      "seuil": 40,
+      "icone": "💨",
+      "titre": "Alerte Vent Fort",
+      "description": "Vents forts détectés. Vol déconseillé au-dessus de 25 km/h.",
+      "couleur": "#ef4444"
+    },
+    {
+      "type": "rafales",
+      "seuil": 50,
+      "icone": "🌪️",
+      "titre": "Alerte Rafales",
+      "description": "Rafales importantes. Vol interdit au-dessus de 45 km/h.",
+      "couleur": "#dc2626"
+    },
+    {
+      "type": "pluie",
+      "seuil": 0.5,
+      "icone": "🌧️",
+      "titre": "Alerte Pluie",
+      "description": "Précipitations prévues. Vol déconseillé sous la pluie.",
+      "couleur": "#3b82f6"
+    },
+    {
+      "type": "visibilite",
+      "seuil": 5,
+      "icone": "🌫️",
+      "titre": "Alerte Brouillard",
+      "description": "Visibilité réduite. Vol interdit sous 1500m de visibilité.",
+      "couleur": "#6b7280"
+    },
+    {
+      "type": "uv_extreme",
+      "seuil": 8,
+      "icone": "☀️",
+      "titre": "Alerte UV Élevé",
+      "description": "Indice UV très élevé. Protégez votre équipement et votre peau.",
+      "couleur": "#f97316"
+    },
+    {
+      "type": "temperature",
+      "seuil_max": 40,
+      "seuil_min": -5,
+      "icone": "🌡️",
+      "titre": "Alerte Température",
+      "description": "Températures extrêmes. Risque de surchauffe batterie du drone.",
+      "couleur": "#eab308"
+    }
+  ],
+  "regles_vol": [
+    "Maximum 120m d'altitude (AGL)",
+    "Pas de vol au-dessus des foules",
+    "Restez à portée de vue (VLOS)",
+    "Vol interdit la nuit sans dérogation",
+    "Respectez les zones interdites (CTR, parcs)",
+    "Pas de vol en zone peuplée sans autorisation",
+    "Assurance RC obligatoire",
+    "Enregistrement AlphaTango obligatoire"
+  ]
+}

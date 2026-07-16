@@ -1,4 +1,4 @@
-const CACHE_NAME = 'skyvision-v4';
+const CACHE_NAME = 'skyvision-v5';
 const BASE = self.location.pathname.replace(/\/[^/]*$/, '/');
 const PRECACHE = [
   BASE,
@@ -11,6 +11,9 @@ const PRECACHE = [
   BASE + 'data/drone.json',
   BASE + 'data/future-sorties.json',
   BASE + 'data/meteo.json',
+  BASE + 'data/flight-zones.json',
+  BASE + 'data/interesting-locations.json',
+  BASE + 'data/weather-alerts.json',
   BASE + 'manifest.json',
   BASE + 'service-worker.js'
 ];
