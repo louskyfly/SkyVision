@@ -134,9 +134,70 @@
         <h2 class="section-title">Sorties</h2>
         <p class="section-subtitle">Chaque vol raconte une histoire</p>
       </div>
+      <div class="sorties-add">
+        <button class="btn btn-primary sortie-add-btn" id="addSortieBtn">+ Ajouter une sortie</button>
+      </div>
       <div class="sorties-grid" id="sortiesGrid"></div>
     </div>
   </section>
+
+  <div class="sortie-modal" id="sortieModal">
+    <div class="sortie-modal-inner">
+      <div class="sortie-modal-header">
+        <h3 id="sortieModalTitle">Nouvelle sortie</h3>
+        <button class="sortie-modal-close" id="sortieModalClose">&times;</button>
+      </div>
+      <form id="sortieForm" class="sortie-form">
+        <input type="hidden" id="sortieEditId">
+        <div class="form-group">
+          <label class="form-label">Titre de la sortie</label>
+          <input type="text" id="sortieTitre" class="form-input" placeholder="Ex: Vol au-dessus du Pic Saint-Loup" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input type="date" id="sortieDate" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Lieu</label>
+            <input type="text" id="sortieLieu" class="form-input" placeholder="Ex: Marsillargues" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea id="sortieDesc" class="form-input form-textarea" placeholder="Raconte ton vol..." rows="3"></textarea>
+        </div>
+        <div class="form-row form-row-3">
+          <div class="form-group">
+            <label class="form-label">Distance</label>
+            <input type="text" id="sortieDistance" class="form-input" placeholder="2.5 km">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Duree</label>
+            <input type="text" id="sortieDuree" class="form-input" placeholder="12 min">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Altitude</label>
+            <input type="text" id="sortieAltitude" class="form-input" placeholder="120m">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Photos</label>
+          <div class="sortie-photo-upload" id="sortiePhotoUpload">
+            <span class="sortie-photo-icon">📷</span>
+            <span class="sortie-photo-text">Ajouter des photos (appareil ou galerie)</span>
+            <input type="file" id="sortiePhotoInput" accept="image/*" capture="environment" multiple hidden>
+          </div>
+          <div class="sortie-photo-preview" id="sortiePhotoPreview" style="display:none">
+            <img id="sortiePhotoImg" src="" alt="Apercu">
+            <button type="button" class="sortie-photo-remove" id="sortiePhotoRemove">&times;</button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="sortieSubmit">Enregistrer la sortie</button>
+        <button type="button" class="btn btn-ghost btn-full" id="sortieDeleteBtn" style="display:none;margin-top:0.5rem;color:#ef4444">Supprimer cette sortie</button>
+      </form>
+    </div>
+  </div>
 
   <section class="section" id="gallery">
     <div class="container">

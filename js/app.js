@@ -973,6 +973,297 @@ function addSavedMarkersToMap(allLocations) {
   });
 }
 
+function buildCustomSortieGallery() {
+  const customSorties = JSON.parse(localStorage.getItem('sv_custom_sorties') || '[]');
+  customSorties.forEach(s => {
+    if (s.photos && s.photos.length) {
+      s.photos.forEach(photo => {
+        const cat = photo.categorie || classifyPhotoName(photo.src, photo.name);
+        allItems.push({
+          type: 'image',
+          src: photo.src,
+          alt: photo.name,
+          sortieId: s.id,
+          label: s.titre + ' — ' + cat
+        });
+      });
+    }
+    if (s.cover && !allItems.some(i => i.src === s.cover)) {
+      allItems.push({
+        type: 'image',
+        src: s.cover,
+        alt: s.titre,
+        sortieId: s.id,
+        label: s.titre
+      });
+    }
+  });
+}
+
+function classifyPhotoName(src, name) {
+  if (!src) return 'autre';
+  try {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    const c = document.createElement('canvas');
+    c.width = 64; c.height = 64;
+    const ctx = c.getContext('2d');
+    return new Promise(resolve => {
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, 64, 64);
+        const d = ctx.getImageData(0, 0, 64, 64).data;
+        let g = 0, b = 0, t = d.length / 4;
+        for (let i = 0; i < d.length; i += 4) {
+          if (d[i+1] > d[i] + 20 && d[i+1] > d[i+2] + 20) g++;
+          if (d[i+2] > d[i] && d[i+2] > d[i+1]) b++;
+        }
+        if (g / t > 0.25) resolve('nature');
+        else if (b / t > 0.25) resolve('eau');
+        else resolve('autre');
+      };
+      img.onerror = () => resolve('autre');
+      img.src = src;
+    });
+  } catch { return 'autre'; }
+}
+
+/* ========== SORTIE FORM ========== */
+function buildCustomSortieGallery() {
+  const customSorties = JSON.parse(localStorage.getItem('sv_custom_sorties') || '[]');
+  customSorties.forEach(s => {
+    if (s.photos && s.photos.length) {
+      s.photos.forEach(photo => {
+        if (!allItems.some(i => i.src === photo.src)) {
+          allItems.push({ type: 'image', src: photo.src, alt: photo.name, sortieId: s.id, label: s.titre + ' — ' + (photo.categorie || 'autre') });
+        }
+      });
+    }
+    if (s.cover && !allItems.some(i => i.src === s.cover)) {
+      allItems.push({ type: 'image', src: s.cover, alt: s.titre, sortieId: s.id, label: s.titre });
+    }
+  });
+}
+
+function refreshSortiesAndGallery(defaultSorties, customSorties) {
+  renderAllSorties(defaultSorties, customSorties);
+  if (window._galleryData && defaultSorties) {
+    allItems = [];
+    buildGalleryItems(window._galleryData, defaultSorties);
+    buildCustomSortieGallery();
+    filterGallery();
+  }
+}
+
+function initSortieForm(defaultSorties) {
+  const modal = document.getElementById('sortieModal');
+  const form = document.getElementById('sortieForm');
+  const addBtn = document.getElementById('addSortieBtn');
+  const closeBtn = document.getElementById('sortieModalClose');
+  const editId = document.getElementById('sortieEditId');
+  const title = document.getElementById('sortieModalTitle');
+  const deleteBtn = document.getElementById('sortieDeleteBtn');
+  const photoUpload = document.getElementById('sortiePhotoUpload');
+  const photoInput = document.getElementById('sortiePhotoInput');
+  const photoPreview = document.getElementById('sortiePhotoPreview');
+  const photoImg = document.getElementById('sortiePhotoImg');
+  const photoRemove = document.getElementById('sortiePhotoRemove');
+
+  let customSorties = JSON.parse(localStorage.getItem('sv_custom_sorties') || '[]');
+  let pendingPhotos = [];
+
+  function openModal(sortie) {
+    form.reset();
+    photoPreview.style.display = 'none';
+    photoUpload.style.display = '';
+    deleteBtn.style.display = 'none';
+    pendingPhotos = [];
+    if (sortie) {
+      editId.value = sortie.id;
+      title.textContent = 'Modifier la sortie';
+      document.getElementById('sortieTitre').value = sortie.titre || '';
+      document.getElementById('sortieDate').value = sortie.date || '';
+      document.getElementById('sortieLieu').value = sortie.lieu || '';
+      document.getElementById('sortieDesc').value = sortie.description || '';
+      document.getElementById('sortieDistance').value = sortie.stats?.distance || '';
+      document.getElementById('sortieDuree').value = sortie.stats?.duree || '';
+      document.getElementById('sortieAltitude').value = sortie.stats?.altitude || '';
+      pendingPhotos = sortie.photos ? [...sortie.photos] : [];
+      if (sortie.cover) {
+        photoImg.src = sortie.cover;
+        photoPreview.style.display = '';
+        photoUpload.style.display = 'none';
+      }
+      deleteBtn.style.display = '';
+    } else {
+      editId.value = '';
+      title.textContent = 'Nouvelle sortie';
+      document.getElementById('sortieDate').value = new Date().toISOString().split('T')[0];
+    }
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  addBtn.addEventListener('click', () => openModal(null));
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+  photoUpload.addEventListener('click', () => photoInput.click());
+  photoInput.addEventListener('change', () => {
+    Array.from(photoInput.files).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const cat = classifyPhotoSimple(img);
+          pendingPhotos.push({ src: e.target.result, name: file.name, categorie: cat });
+          if (photoPreview.style.display === 'none') {
+            photoImg.src = e.target.result;
+            photoPreview.style.display = '';
+            photoUpload.style.display = 'none';
+          }
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+  photoRemove.addEventListener('click', () => {
+    photoPreview.style.display = 'none';
+    photoUpload.style.display = '';
+    photoInput.value = '';
+  });
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const sortie = {
+      id: editId.value || 'custom-' + Date.now(),
+      titre: document.getElementById('sortieTitre').value,
+      date: document.getElementById('sortieDate').value,
+      lieu: document.getElementById('sortieLieu').value,
+      description: document.getElementById('sortieDesc').value,
+      stats: {
+        distance: document.getElementById('sortieDistance').value || '—',
+        duree: document.getElementById('sortieDuree').value || '—',
+        altitude: document.getElementById('sortieAltitude').value || '—'
+      },
+      cover: photoPreview.style.display !== 'none' ? photoImg.src : null,
+      photos: pendingPhotos,
+      custom: true
+    };
+    const idx = customSorties.findIndex(s => s.id === sortie.id);
+    if (idx >= 0) customSorties[idx] = sortie;
+    else customSorties.unshift(sortie);
+    localStorage.setItem('sv_custom_sorties', JSON.stringify(customSorties));
+    closeModal();
+    refreshSortiesAndGallery(defaultSorties, customSorties);
+  });
+
+  deleteBtn.addEventListener('click', () => {
+    if (!editId.value) return;
+    if (!confirm('Supprimer cette sortie ?')) return;
+    customSorties = customSorties.filter(s => s.id !== editId.value);
+    localStorage.setItem('sv_custom_sorties', JSON.stringify(customSorties));
+    closeModal();
+    refreshSortiesAndGallery(defaultSorties, customSorties);
+  });
+
+  document.querySelectorAll('.sorties-grid').forEach(grid => {
+    grid.addEventListener('dblclick', e => {
+      const card = e.target.closest('.sortie-card');
+      if (card && card.dataset.custom === 'true') {
+        const id = card.dataset.sortie;
+        const s = customSorties.find(x => x.id === id);
+        if (s) openModal(s);
+      }
+    });
+  });
+
+  renderAllSorties(defaultSorties, customSorties);
+}
+
+function renderAllSorties(defaultSorties, customSorties) {
+  const all = [...customSorties, ...defaultSorties];
+  const g = document.getElementById('sortiesGrid');
+  g.innerHTML = all.map(s => `
+    <div class="sortie-card${s.custom ? ' sortie-custom' : ''}" data-sortie="${s.id}" data-custom="${s.custom || false}">
+      <div class="sortie-cover-wrap">
+        ${s.cover
+          ? `<img src="${s.cover}" alt="${s.titre}" onerror="this.style.display='none'">`
+          : `<div class="sortie-cover-placeholder">${s.lieu ? s.lieu.charAt(0) : '✈️'}</div>`
+        }
+        <span class="sortie-badge">${s.stats?.duree || '—'}</span>
+        ${s.custom ? '<span class="sortie-badge-custom">✦</span>' : ''}
+        ${s.photos && s.photos.length > 1 ? `<span class="sortie-badge-count">${s.photos.length} 📷</span>` : ''}
+      </div>
+      <div class="sortie-info">
+        <div class="sortie-date">${new Date(s.date).toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'})}</div>
+        <h3 class="sortie-titre">${s.titre}</h3>
+        <div class="sortie-lieu">${s.lieu}</div>
+        ${s.description ? `<p class="sortie-desc">${s.description}</p>` : ''}
+        <div class="sortie-stats">
+          <span class="sortie-stat"><strong>${s.stats?.distance || '—'}</strong> distance</span>
+          <span class="sortie-stat"><strong>${s.stats?.duree || '—'}</strong></span>
+          <span class="sortie-stat"><strong>${s.stats?.altitude || '—'}</strong></span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  g.querySelectorAll('.sortie-card').forEach(card => {
+    card.addEventListener('click', () => {
+      if (card.dataset.custom === 'true') return;
+      const id = card.dataset.sortie;
+      currentFilter = id;
+      document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === id));
+      filterGallery();
+    });
+    if (card.dataset.custom === 'true') {
+      card.addEventListener('dblclick', () => {
+        const id = card.dataset.sortie;
+        const s = customSorties.find(x => x.id === id);
+        if (s) {
+          const modal = document.getElementById('sortieModal');
+          const form = document.getElementById('sortieForm');
+          const editIdEl = document.getElementById('sortieEditId');
+          const titleEl = document.getElementById('sortieModalTitle');
+          const deleteBtnEl = document.getElementById('sortieDeleteBtn');
+          const photoUploadEl = document.getElementById('sortiePhotoUpload');
+          const photoPreviewEl = document.getElementById('sortiePhotoPreview');
+          const photoImgEl = document.getElementById('sortiePhotoImg');
+          form.reset();
+          photoPreviewEl.style.display = 'none';
+          photoUploadEl.style.display = '';
+          deleteBtnEl.style.display = '';
+          editIdEl.value = s.id;
+          titleEl.textContent = 'Modifier la sortie';
+          document.getElementById('sortieTitre').value = s.titre || '';
+          document.getElementById('sortieDate').value = s.date || '';
+          document.getElementById('sortieLieu').value = s.lieu || '';
+          document.getElementById('sortieDesc').value = s.description || '';
+          document.getElementById('sortieDistance').value = s.stats?.distance || '';
+          document.getElementById('sortieDuree').value = s.stats?.duree || '';
+          document.getElementById('sortieAltitude').value = s.stats?.altitude || '';
+          if (s.cover) { photoImgEl.src = s.cover; photoPreviewEl.style.display = ''; photoUploadEl.style.display = 'none'; }
+          modal.classList.add('open');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+    }
+  });
+
+  if (typeof gsap !== 'undefined') {
+    gsap.from(g.querySelectorAll('.sortie-card'), {
+      y: 30, opacity: 0, duration: 0.5, stagger: 0.08, ease: 'power2.out'
+    });
+  }
+}
+
 /* ========== NAV HERO BEHAVIOR ========== */
 function initNavHeroBehavior() {
   const hero = document.getElementById('hero');
@@ -1180,12 +1471,13 @@ async function load() {
   }
 
   if (sorties) {
-    renderSorties(sorties.sorties);
     renderFilters(sorties.sorties);
   }
 
   if (gallery && sorties) {
+    window._galleryData = gallery;
     buildGalleryItems(gallery, sorties.sorties);
+    buildCustomSortieGallery();
     filterGallery();
   }
 
@@ -1213,6 +1505,7 @@ async function load() {
   initMiniWidgets();
   initDJIAutoImport();
   initNavHeroBehavior();
+  initSortieForm(sorties ? sorties.sorties : []);
 
   if (lieuxData && lieuxData.length) {
     initSwipe(lieuxData);
