@@ -1012,6 +1012,9 @@ function initSortieForm(defaultSorties) {
     document.body.style.overflow = '';
   }
 
+  window._openSortieModal = openModal;
+  window._customSorties = customSorties;
+
   addBtn.addEventListener('click', () => openModal(null));
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
@@ -1064,6 +1067,7 @@ function initSortieForm(defaultSorties) {
     else customSorties.unshift(sortie);
     localStorage.setItem('sv_custom_sorties', JSON.stringify(customSorties));
     closeModal();
+    window._customSorties = customSorties;
     refreshSortiesAndGallery(defaultSorties, customSorties);
   });
 
@@ -1073,6 +1077,7 @@ function initSortieForm(defaultSorties) {
     customSorties = customSorties.filter(s => s.id !== editId.value);
     localStorage.setItem('sv_custom_sorties', JSON.stringify(customSorties));
     closeModal();
+    window._customSorties = customSorties;
     refreshSortiesAndGallery(defaultSorties, customSorties);
   });
 
@@ -1114,18 +1119,30 @@ function renderAllSorties(defaultSorties, customSorties) {
           <span class="sortie-stat"><strong>${s.stats?.duree || '—'}</strong></span>
           <span class="sortie-stat"><strong>${s.stats?.altitude || '—'}</strong></span>
         </div>
+        <button class="sortie-edit-btn" data-sortie-id="${s.id}" data-custom="${s.custom || false}" title="Modifier">✎</button>
       </div>
     </div>
   `).join('');
 
   g.querySelectorAll('.sortie-card').forEach(card => {
-    card.addEventListener('click', () => {
+    card.addEventListener('click', e => {
+      if (e.target.closest('.sortie-edit-btn')) return;
       if (card.dataset.custom === 'true') return;
       const id = card.dataset.sortie;
       currentFilter = id;
       document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === id));
       filterGallery();
+    });
+  });
+
+  g.querySelectorAll('.sortie-edit-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const id = btn.dataset.sortieId;
+      const all = [...(window._customSorties || []), ...defaultSorties];
+      const s = all.find(x => x.id === id);
+      if (s && window._openSortieModal) window._openSortieModal(s);
     });
   });
 

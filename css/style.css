@@ -116,9 +116,12 @@ html.scroll-locked body { overflow: hidden; }
 .sortie-titre { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.25rem; }
 .sortie-lieu { font-size: 0.85rem; color: var(--accent); margin-bottom: 0.5rem; }
 .sortie-desc { font-size: 0.85rem; color: var(--text2); line-height: 1.5; margin-bottom: 0.75rem; }
-.sortie-stats { display: flex; gap: 1rem; }
+.sortie-stats { display: flex; gap: 1rem; position: relative; }
 .sortie-stat { font-size: 0.75rem; color: var(--text3); }
 .sortie-stat strong { color: var(--text2); }
+.sortie-edit-btn { position: absolute; right: 0; bottom: 0; width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg3); color: var(--text3); font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; opacity: 0; }
+.sortie-card:hover .sortie-edit-btn { opacity: 1; }
+.sortie-edit-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
 
 /* GALLERY */
 .gallery-filters { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; justify-content: center; }
