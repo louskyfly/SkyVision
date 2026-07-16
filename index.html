@@ -29,6 +29,7 @@
       <div class="nav-links" id="navLinks">
         <div class="nav-bubble" id="navBubble"></div>
         <a href="#sorties" class="nav-link active">Sorties</a>
+        <a href="#decouvrir" class="nav-link">Decouvrir</a>
         <a href="#gallery" class="nav-link">Galerie</a>
         <a href="#carte" class="nav-link">Carte</a>
         <a href="#outils" class="nav-link">Outils</a>
@@ -42,6 +43,7 @@
 
   <div class="mobile-menu" id="mobileMenu">
     <a href="#sorties" class="mobile-link">Sorties</a>
+    <a href="#decouvrir" class="mobile-link">Decouvrir</a>
     <a href="#gallery" class="mobile-link">Galerie</a>
     <a href="#carte" class="mobile-link">Carte</a>
     <a href="#outils" class="mobile-link">Outils</a>
@@ -93,6 +95,35 @@
     </div>
     <div class="hero-drone">
       <img src="assets/images/dji-neo-2.png" alt="DJI Neo 2" class="drone-img" id="droneImg">
+    </div>
+  </section>
+
+  <section class="section" id="decouvrir">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Explore</span>
+        <h2 class="section-title">Decouvrir</h2>
+        <p class="section-subtitle">Swipe pour trouver ton prochain spot de vol</p>
+      </div>
+      <div class="swipe-container" id="swipeContainer">
+        <div class="swipe-empty" id="swipeEmpty" style="display:none">
+          <div class="swipe-empty-icon">🗺️</div>
+          <h3>Tous les lieux ont ete explores !</h3>
+          <p>Reviens plus tard pour decouvrir de nouveaux spots.</p>
+          <button class="btn btn-primary" id="swipeReset">Recommencer</button>
+        </div>
+        <div class="swipe-cards" id="swipeCards"></div>
+        <div class="swipe-actions">
+          <button class="swipe-btn swipe-nope" id="swipeNope" title="Passer">✕</button>
+          <button class="swipe-btn swipe-info" id="swipeInfo" title="Details">ℹ</button>
+          <button class="swipe-btn swipe-like" id="swipeLike" title="Ajouter a ma carte">♥</button>
+        </div>
+        <div class="swipe-counter" id="swipeCounter"></div>
+      </div>
+      <div class="swipe-saved" id="swipeSaved" style="display:none">
+        <h3>Lieux sauvegardes</h3>
+        <div class="swipe-saved-list" id="swipeSavedList"></div>
+      </div>
     </div>
   </section>
 

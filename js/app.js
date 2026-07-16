@@ -741,11 +741,235 @@ function initDJIImport() {
   }
 }
 
+/* ========== SWIPE DISCOVER ========== */
+function initSwipe(allLocations) {
+  const cards = document.getElementById('swipeCards');
+  const empty = document.getElementById('swipeEmpty');
+  const counter = document.getElementById('swipeCounter');
+  const saved = document.getElementById('swipeSaved');
+  const savedList = document.getElementById('swipeSavedList');
+  const nopeBtn = document.getElementById('swipeNope');
+  const likeBtn = document.getElementById('swipeLike');
+  const infoBtn = document.getElementById('swipeInfo');
+  const resetBtn = document.getElementById('swipeReset');
+
+  let savedIds = JSON.parse(localStorage.getItem('sv_saved_locations') || '[]');
+  let queue = allLocations.filter(l => !savedIds.includes(l.id));
+  let current = 0;
+  let startX = 0, startY = 0, dx = 0, isDragging = false;
+
+  const gradients = [
+    'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+    'linear-gradient(135deg, #0d1117 0%, #161b22 50%, #21262d 100%)',
+    'linear-gradient(135deg, #1b0a2a 0%, #2d1b4e 50%, #1a0a3e 100%)',
+    'linear-gradient(135deg, #0a192f 0%, #112240 50%, #233554 100%)',
+    'linear-gradient(135deg, #1a0000 0%, #2d1010 50%, #3d1a1a 100%)',
+    'linear-gradient(135deg, #001a1a 0%, #0d2b2b 50%, #1a3d3d 100%)',
+  ];
+
+  function render() {
+    if (current >= queue.length) {
+      cards.innerHTML = '';
+      empty.style.display = '';
+      counter.textContent = '';
+      renderSaved();
+      return;
+    }
+    empty.style.display = 'none';
+    cards.innerHTML = '';
+    const remaining = queue.slice(current).reverse();
+    remaining.forEach((loc, ri) => {
+      const i = remaining.length - 1 - ri;
+      const card = document.createElement('div');
+      card.className = 'swipe-card';
+      card.dataset.id = loc.id;
+      const scale = i === 0 ? 1 : 1 - i * 0.04;
+      const translateY = i * 8;
+      card.style.transform = `scale(${scale}) translateY(${translateY}px)`;
+      card.style.zIndex = 100 - i;
+      if (i > 2) card.style.display = 'none';
+      const g = gradients[allLocations.indexOf(loc) % gradients.length];
+      card.innerHTML = `
+        <div class="swipe-card-stamp like">AJOUTER</div>
+        <div class="swipe-card-stamp nope">PASSER</div>
+        <div class="swipe-card-img">
+          <div class="swipe-card-gradient" style="background:${g}">
+            <span class="swipe-emoji">${loc.icone}</span>
+          </div>
+        </div>
+        <div class="swipe-card-body">
+          <div class="swipe-card-cat">${loc.categorie}</div>
+          <div class="swipe-card-name">${loc.nom}</div>
+          <div class="swipe-card-desc">${loc.description}</div>
+          <div class="swipe-card-meta">${(loc.tags||[]).map(t => `<span class="swipe-card-tag">${t}</span>`).join('')}</div>
+          <div class="swipe-card-footer">
+            <span class="swipe-card-stat"><strong>${loc.difficulte}</strong> Difficulte</span>
+            <span class="swipe-card-stat"><strong>${loc.altitude_recommandee}</strong> Altitude</span>
+            <span class="swipe-card-stat"><strong>${loc.meilleure_periode}</strong></span>
+          </div>
+        </div>
+      `;
+      cards.appendChild(card);
+    });
+    counter.textContent = `${current + 1} / ${queue.length}`;
+    if (current < queue.length) setupDrag(queue[current]);
+  }
+
+  function setupDrag(loc) {
+    const card = cards.querySelector('.swipe-card:last-child');
+    if (!card) return;
+
+    function onStart(e) {
+      isDragging = true;
+      startX = e.touches ? e.touches[0].clientX : e.clientX;
+      startY = e.touches ? e.touches[0].clientY : e.clientY;
+      card.style.transition = 'none';
+    }
+    function onMove(e) {
+      if (!isDragging) return;
+      dx = (e.touches ? e.touches[0].clientX : e.clientX) - startX;
+      const rotate = dx * 0.12;
+      const dy = Math.abs(dx) * 0.05;
+      card.style.transform = `translateX(${dx}px) rotate(${rotate}deg) translateY(${-dy}px)`;
+      const likeStamp = card.querySelector('.swipe-card-stamp.like');
+      const nopeStamp = card.querySelector('.swipe-card-stamp.nope');
+      if (dx > 40) {
+        likeStamp.style.opacity = Math.min(1, (dx - 40) / 80);
+        nopeStamp.style.opacity = 0;
+      } else if (dx < -40) {
+        nopeStamp.style.opacity = Math.min(1, (-dx - 40) / 80);
+        likeStamp.style.opacity = 0;
+      } else {
+        likeStamp.style.opacity = 0;
+        nopeStamp.style.opacity = 0;
+      }
+    }
+    function onEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      card.style.transition = 'transform 0.4s cubic-bezier(.22,1,.36,1)';
+      if (dx > 100) {
+        flyOut(card, 'right', loc);
+      } else if (dx < -100) {
+        flyOut(card, 'left', loc);
+      } else {
+        card.style.transform = '';
+        const stamps = card.querySelectorAll('.swipe-card-stamp');
+        stamps.forEach(s => s.style.opacity = 0);
+        dx = 0;
+      }
+    }
+
+    card.addEventListener('mousedown', onStart);
+    card.addEventListener('touchstart', onStart, { passive: true });
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('touchmove', onMove, { passive: true });
+    document.addEventListener('mouseup', onEnd);
+    document.addEventListener('touchend', onEnd);
+
+    card._cleanup = () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('mouseup', onEnd);
+      document.removeEventListener('touchend', onEnd);
+    };
+  }
+
+  function flyOut(card, dir, loc) {
+    if (card._cleanup) card._cleanup();
+    const x = dir === 'right' ? window.innerWidth : -window.innerWidth;
+    card.style.transition = 'transform 0.5s cubic-bezier(.22,1,.36,1), opacity 0.5s';
+    card.style.transform = `translateX(${x}px) rotate(${dir === 'right' ? 30 : -30}deg)`;
+    card.style.opacity = '0';
+    if (dir === 'right') {
+      savedIds.push(loc.id);
+      localStorage.setItem('sv_saved_locations', JSON.stringify(savedIds));
+    }
+    setTimeout(() => { current++; render(); }, 350);
+  }
+
+  function add(loc) {
+    if (current >= queue.length) return;
+    const card = cards.querySelector('.swipe-card:last-child');
+    if (card) flyOut(card, 'right', loc);
+  }
+
+  function skip() {
+    if (current >= queue.length) return;
+    const card = cards.querySelector('.swipe-card:last-child');
+    if (card) flyOut(card, 'left', queue[current]);
+  }
+
+  function renderSaved() {
+    if (savedIds.length === 0) { saved.style.display = 'none'; return; }
+    saved.style.display = '';
+    savedList.innerHTML = savedIds.map(id => {
+      const loc = allLocations.find(l => l.id === id);
+      if (!loc) return '';
+      return `<div class="swipe-saved-item">
+        <span class="saved-emoji">${loc.icone}</span>
+        <span class="saved-name">${loc.nom}</span>
+        <span class="saved-cat">${loc.categorie}</span>
+        <button class="saved-remove" data-id="${loc.id}" title="Retirer">✕</button>
+      </div>`;
+    }).join('');
+    savedList.querySelectorAll('.saved-remove').forEach(btn => {
+      btn.addEventListener('click', () => {
+        savedIds = savedIds.filter(i => i !== btn.dataset.id);
+        localStorage.setItem('sv_saved_locations', JSON.stringify(savedIds));
+        renderSaved();
+        addSavedMarkersToMap(allLocations);
+      });
+    });
+  }
+
+  if (likeBtn) likeBtn.addEventListener('click', () => { if (current < queue.length) add(queue[current]); });
+  if (nopeBtn) nopeBtn.addEventListener('click', () => { if (current < queue.length) skip(); });
+  if (infoBtn) infoBtn.addEventListener('click', () => {
+    if (current < queue.length) {
+      const loc = queue[current];
+      alert(`${loc.icone} ${loc.nom}\n\n${loc.description}\n\nConseils: ${loc.conseils}\nPeriode: ${loc.meilleure_periode}\nAltitude: ${loc.altitude_recommandee}`);
+    }
+  });
+  if (resetBtn) resetBtn.addEventListener('click', () => {
+    savedIds = [];
+    localStorage.removeItem('sv_saved_locations');
+    queue = [...allLocations];
+    current = 0;
+    empty.style.display = 'none';
+    render();
+  });
+
+  render();
+  renderSaved();
+  addSavedMarkersToMap(allLocations);
+}
+
+function addSavedMarkersToMap(allLocations) {
+  if (!window._mainMap) return;
+  if (window._savedMapMarkers) window._savedMapMarkers.forEach(m => window._mainMap.removeLayer(m));
+  window._savedMapMarkers = [];
+  const savedIds = JSON.parse(localStorage.getItem('sv_saved_locations') || '[]');
+  savedIds.forEach(id => {
+    const loc = allLocations.find(l => l.id === id);
+    if (!loc) return;
+    const marker = L.marker([loc.lat, loc.lng], {
+      icon: L.divIcon({
+        className: 'lieu-marker',
+        html: `<div style="width:32px;height:32px;background:#22c55e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3)">${loc.icone}</div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+      })
+    }).addTo(window._mainMap);
+    marker.bindPopup(`<div class="zone-popup"><h4>⭐ ${loc.nom}</h4><p>${loc.description}</p><span class="zone-tag" style="background:#22c55e">${loc.categorie}</span></div>`);
+    window._savedMapMarkers.push(marker);
+  });
+}
+
 /* ========== NAV HERO BEHAVIOR ========== */
 function initNavHeroBehavior() {
-  const nav = document.querySelector('.nav');
   const hero = document.getElementById('hero');
-  if (!nav || !hero) return;
+  if (!hero) return;
 
   document.documentElement.classList.add('scroll-locked');
 
@@ -753,7 +977,6 @@ function initNavHeroBehavior() {
     el.addEventListener('click', () => {
       document.documentElement.classList.remove('scroll-locked');
     });
-  });
   });
 }
 
@@ -983,6 +1206,10 @@ async function load() {
   initMiniWidgets();
   initDJIAutoImport();
   initNavHeroBehavior();
+
+  if (lieuxData && lieuxData.length) {
+    initSwipe(lieuxData);
+  }
 
   setTimeout(() => { initAnimations(); initLenis(); }, 100);
 }

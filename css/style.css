@@ -39,8 +39,6 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 /* NAV */
 .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 1rem 1.5rem; transition: all 0.3s var(--ease); }
 .nav.scrolled { background: rgba(0,0,0,0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
-.nav.nav--hero { opacity: 0.2; pointer-events: none; }
-.nav.nav--hero:hover { opacity: 1; pointer-events: auto; }
 .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
 .nav-logo { font-size: 1.2rem; font-weight: 800; color: var(--text); text-decoration: none; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .nav-links { position: relative; display: flex; gap: 0.25rem; background: var(--glass); border: 1px solid var(--border); border-radius: 100px; padding: 0.3rem; }
@@ -278,6 +276,49 @@ html.scroll-locked body { overflow: hidden; }
 .carte-wrapper.fullscreen .carte-filters { position: absolute; bottom: 0; left: 0; right: 0; z-index: 10; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); padding: 0.5rem 1rem; margin: 0; justify-content: center; border-top: 1px solid var(--border); }
 .carte-wrapper.fullscreen .map-fullscreen-btn { bottom: 4rem; background: var(--accent); color: #fff; }
 
+/* SWIPE DISCOVER */
+.swipe-container { position: relative; width: 100%; max-width: 420px; height: 520px; margin: 0 auto; perspective: 1000px; }
+.swipe-cards { position: relative; width: 100%; height: 100%; }
+.swipe-card { position: absolute; width: 100%; height: 100%; border-radius: var(--r-lg); border: 1px solid var(--border); background: var(--glass); overflow: hidden; cursor: grab; user-select: none; touch-action: none; transition: transform 0.15s ease-out; will-change: transform; display: flex; flex-direction: column; }
+.swipe-card:active { cursor: grabbing; }
+.swipe-card-img { height: 55%; position: relative; overflow: hidden; }
+.swipe-card-gradient { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.swipe-card-gradient .swipe-emoji { font-size: 5rem; filter: drop-shadow(0 4px 20px rgba(0,0,0,0.3)); }
+.swipe-card-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }
+.swipe-card-cat { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); font-weight: 600; margin-bottom: 0.3rem; }
+.swipe-card-name { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.4rem; }
+.swipe-card-desc { font-size: 0.85rem; color: var(--text2); line-height: 1.5; flex: 1; }
+.swipe-card-meta { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.75rem; }
+.swipe-card-tag { font-size: 0.7rem; padding: 0.2rem 0.6rem; background: var(--glass2); border-radius: 100px; color: var(--text2); }
+.swipe-card-footer { display: flex; gap: 1rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+.swipe-card-stat { font-size: 0.75rem; color: var(--text3); }
+.swipe-card-stat strong { color: var(--text2); }
+.swipe-card-stamp { position: absolute; top: 2rem; padding: 0.5rem 1.5rem; border-radius: 8px; font-size: 1.5rem; font-weight: 900; letter-spacing: 3px; opacity: 0; pointer-events: none; transform: rotate(-15deg); border: 4px solid; z-index: 5; }
+.swipe-card-stamp.like { right: 1.5rem; color: #22c55e; border-color: #22c55e; }
+.swipe-card-stamp.nope { left: 1.5rem; color: #ef4444; border-color: #ef4444; }
+.swipe-actions { display: flex; gap: 1.25rem; justify-content: center; margin-top: 1.5rem; }
+.swipe-btn { width: 56px; height: 56px; border-radius: 50%; border: 2px solid; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); font-size: 1.4rem; cursor: pointer; transition: all 0.3s var(--ease); display: flex; align-items: center; justify-content: center; }
+.swipe-btn:active { transform: scale(0.9); }
+.swipe-nope { color: #ef4444; border-color: #ef4444; }
+.swipe-nope:hover { background: rgba(239,68,68,0.2); box-shadow: 0 0 20px rgba(239,68,68,0.3); }
+.swipe-info { color: #3b82f6; border-color: #3b82f6; width: 44px; height: 44px; font-size: 1rem; }
+.swipe-info:hover { background: rgba(59,130,246,0.2); box-shadow: 0 0 20px rgba(59,130,246,0.3); }
+.swipe-like { color: #22c55e; border-color: #22c55e; }
+.swipe-like:hover { background: rgba(34,197,94,0.2); box-shadow: 0 0 20px rgba(34,197,94,0.3); }
+.swipe-counter { text-align: center; font-size: 0.8rem; color: var(--text3); margin-top: 0.75rem; }
+.swipe-empty { text-align: center; padding: 3rem; }
+.swipe-empty-icon { font-size: 4rem; margin-bottom: 1rem; }
+.swipe-empty h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; }
+.swipe-empty p { color: var(--text2); margin-bottom: 1.5rem; }
+.swipe-saved { max-width: 420px; margin: 2rem auto 0; }
+.swipe-saved h3 { font-size: 1rem; font-weight: 700; margin-bottom: 1rem; text-align: center; }
+.swipe-saved-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.swipe-saved-item { display: flex; align-items: center; gap: 0.75rem; background: var(--glass); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 0.6rem 1rem; }
+.swipe-saved-item .saved-emoji { font-size: 1.3rem; }
+.swipe-saved-item .saved-name { font-size: 0.85rem; font-weight: 600; flex: 1; }
+.swipe-saved-item .saved-cat { font-size: 0.7rem; color: var(--text3); }
+.swipe-saved-item .saved-remove { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 1rem; padding: 0.2rem; }
+
 /* RESPONSIVE */
 @media (max-width: 1024px) {
   .masonry { columns: 2; }
@@ -307,4 +348,7 @@ html.scroll-locked body { overflow: hidden; }
   .mini-val { font-size: 0.7rem; }
   .mini-label { font-size: 0.55rem; }
   .map-fullscreen-btn { width: 38px; height: 38px; font-size: 1.1rem; }
+  .swipe-container { max-width: 95vw; height: 460px; }
+  .swipe-card-img { height: 50%; }
+  .swipe-card-name { font-size: 1.2rem; }
 }
