@@ -1223,38 +1223,6 @@ function renderAllSorties(defaultSorties, customSorties) {
       document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === id));
       filterGallery();
     });
-    if (card.dataset.custom === 'true') {
-      card.addEventListener('dblclick', () => {
-        const id = card.dataset.sortie;
-        const s = customSorties.find(x => x.id === id);
-        if (s) {
-          const modal = document.getElementById('sortieModal');
-          const form = document.getElementById('sortieForm');
-          const editIdEl = document.getElementById('sortieEditId');
-          const titleEl = document.getElementById('sortieModalTitle');
-          const deleteBtnEl = document.getElementById('sortieDeleteBtn');
-          const photoUploadEl = document.getElementById('sortiePhotoUpload');
-          const photoPreviewEl = document.getElementById('sortiePhotoPreview');
-          const photoImgEl = document.getElementById('sortiePhotoImg');
-          form.reset();
-          photoPreviewEl.style.display = 'none';
-          photoUploadEl.style.display = '';
-          deleteBtnEl.style.display = '';
-          editIdEl.value = s.id;
-          titleEl.textContent = 'Modifier la sortie';
-          document.getElementById('sortieTitre').value = s.titre || '';
-          document.getElementById('sortieDate').value = s.date || '';
-          document.getElementById('sortieLieu').value = s.lieu || '';
-          document.getElementById('sortieDesc').value = s.description || '';
-          document.getElementById('sortieDistance').value = s.stats?.distance || '';
-          document.getElementById('sortieDuree').value = s.stats?.duree || '';
-          document.getElementById('sortieAltitude').value = s.stats?.altitude || '';
-          if (s.cover) { photoImgEl.src = s.cover; photoPreviewEl.style.display = ''; photoUploadEl.style.display = 'none'; }
-          modal.classList.add('open');
-          document.body.style.overflow = 'hidden';
-        }
-      });
-    }
   });
 
   if (typeof gsap !== 'undefined') {
