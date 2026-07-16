@@ -329,13 +329,23 @@ function initMainMap(data) {
 
   const legend = document.getElementById('carteLegend');
   legend.innerHTML = `
-    <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Zone libre (A)</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#eab308"></div>Déclaration (B)</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#f97316"></div>Autorisation (C)</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>Interdit (D)</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>Lieu d'intérêt</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Marqueur GPS</div>
+    <div class="legend-toggle" id="legendToggle">Légende ▾</div>
+    <div class="legend-items" id="legendItems" style="display:none">
+      <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Zone libre (A)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#eab308"></div>Déclaration (B)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f97316"></div>Autorisation (C)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>Interdit (D)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>Lieu d'intérêt</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Marqueur GPS</div>
+    </div>
   `;
+  const legendToggle = document.getElementById('legendToggle');
+  const legendItems = document.getElementById('legendItems');
+  legendToggle.addEventListener('click', () => {
+    const open = legendItems.style.display !== 'none';
+    legendItems.style.display = open ? 'none' : '';
+    legendToggle.textContent = open ? 'Légende ▾' : 'Légende ▴';
+  });
 
   document.querySelectorAll('.carte-layer').forEach(btn => {
     btn.addEventListener('click', () => {

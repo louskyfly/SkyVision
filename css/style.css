@@ -164,7 +164,10 @@ html.scroll-locked body { overflow: hidden; }
 .carte-filters::-webkit-scrollbar { display: none; }
 .zone-chip { padding: 0.35rem 0.9rem; border-radius: 100px; border: 1px solid var(--border); background: transparent; color: var(--text2); font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: all 0.3s; }
 .zone-chip.active { background: var(--chip-color, var(--accent)); border-color: var(--chip-color, var(--accent)); color: #fff; }
-.carte-legend { position: absolute; bottom: 1rem; left: 1rem; z-index: 10; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); border-radius: var(--r-sm); padding: 0.75rem 1rem; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.4rem; }
+.carte-legend { position: absolute; bottom: 1rem; left: 1rem; z-index: 10; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); border-radius: var(--r-sm); border: 1px solid var(--border); }
+.legend-toggle { padding: 0.5rem 0.75rem; font-size: 0.75rem; font-weight: 600; color: var(--text2); cursor: pointer; user-select: none; white-space: nowrap; }
+.legend-toggle:hover { color: var(--text); }
+.legend-items { display: flex; flex-direction: column; gap: 0.4rem; padding: 0 0.75rem 0.6rem; }
 .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.7rem; color: var(--text2); }
 .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 .zone-popup { font-family: 'Inter', sans-serif; }
