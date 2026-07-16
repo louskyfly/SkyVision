@@ -781,10 +781,10 @@ function initSwipe(allLocations) {
     remaining.forEach((loc, ri) => {
       const i = remaining.length - 1 - ri;
       const card = document.createElement('div');
-      card.className = 'swipe-card';
+      card.className = 'swipe-card' + (i > 0 ? ' behind' : '');
       card.dataset.id = loc.id;
-      const scale = i === 0 ? 1 : 1 - i * 0.04;
-      const translateY = i * 8;
+      const scale = i === 0 ? 1 : 1 - i * 0.05;
+      const translateY = i * 12;
       card.style.transform = `scale(${scale}) translateY(${translateY}px)`;
       card.style.zIndex = 100 - i;
       if (i > 2) card.style.display = 'none';

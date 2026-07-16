@@ -279,8 +279,10 @@ html.scroll-locked body { overflow: hidden; }
 /* SWIPE DISCOVER */
 .swipe-container { position: relative; width: 100%; max-width: 420px; height: 520px; margin: 0 auto; perspective: 1000px; }
 .swipe-cards { position: relative; width: 100%; height: 100%; }
-.swipe-card { position: absolute; width: 100%; height: 100%; border-radius: var(--r-lg); border: 1px solid var(--border); background: var(--glass); overflow: hidden; cursor: grab; user-select: none; touch-action: none; transition: transform 0.15s ease-out; will-change: transform; display: flex; flex-direction: column; }
+.swipe-card { position: absolute; width: 100%; height: 100%; border-radius: var(--r-lg); border: 1px solid var(--border); background: var(--bg2); overflow: hidden; cursor: grab; user-select: none; touch-action: none; transition: transform 0.15s ease-out, box-shadow 0.3s; will-change: transform; display: flex; flex-direction: column; }
 .swipe-card:active { cursor: grabbing; }
+.swipe-card.behind { pointer-events: none; }
+.swipe-card.behind .swipe-card-body { display: none; }
 .swipe-card-img { height: 55%; position: relative; overflow: hidden; }
 .swipe-card-gradient { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
 .swipe-card-gradient .swipe-emoji { font-size: 5rem; filter: drop-shadow(0 4px 20px rgba(0,0,0,0.3)); }
