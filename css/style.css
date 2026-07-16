@@ -93,7 +93,7 @@ html.scroll-locked body { overflow: hidden; }
 .btn-ghost:hover { color: var(--text); }
 .hero-drone { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 1; pointer-events: none; }
 .drone-img { width: clamp(200px, 25vw, 380px); filter: drop-shadow(0 20px 60px rgba(59,130,246,0.2)); animation: droneFloat 6s ease-in-out infinite; }
-@keyframes droneFloat { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-20px) rotate(2deg)} }
+@keyframes droneFloat { 0%,100%{transform:translateY(0) rotate(0deg)} 30%{transform:translateY(-35px) rotate(2.5deg)} 70%{transform:translateY(20px) rotate(-1.5deg)} }
 
 /* HERO MINI WIDGETS */
 .hero-mini-widgets { position: absolute; top: 5rem; left: 50%; transform: translateX(-50%); z-index: 5; display: flex; gap: 0.75rem; }
