@@ -783,32 +783,39 @@ function initSwipe(allLocations) {
       const card = document.createElement('div');
       card.className = 'swipe-card' + (i > 0 ? ' behind' : '');
       card.dataset.id = loc.id;
-      const scale = i === 0 ? 1 : 1 - i * 0.05;
-      const translateY = i * 12;
+      if (i === 0) {
+        const g = gradients[allLocations.indexOf(loc) % gradients.length];
+        card.innerHTML = `
+          <div class="swipe-card-stamp like">AJOUTER</div>
+          <div class="swipe-card-stamp nope">PASSER</div>
+          <div class="swipe-card-img">
+            <div class="swipe-card-gradient" style="background:${g}">
+              <span class="swipe-emoji">${loc.icone}</span>
+            </div>
+          </div>
+          <div class="swipe-card-body">
+            <div class="swipe-card-cat">${loc.categorie}</div>
+            <div class="swipe-card-name">${loc.nom}</div>
+            <div class="swipe-card-desc">${loc.description}</div>
+            <div class="swipe-card-meta">${(loc.tags||[]).map(t => `<span class="swipe-card-tag">${t}</span>`).join('')}</div>
+            <div class="swipe-card-footer">
+              <span class="swipe-card-stat"><strong>${loc.difficulte}</strong> Difficulte</span>
+              <span class="swipe-card-stat"><strong>${loc.altitude_recommandee}</strong> Altitude</span>
+              <span class="swipe-card-stat"><strong>${loc.meilleure_periode}</strong></span>
+            </div>
+          </div>
+        `;
+      } else if (i <= 2) {
+        const g = gradients[allLocations.indexOf(loc) % gradients.length];
+        card.style.background = g;
+        card.style.borderColor = 'rgba(255,255,255,0.15)';
+        card.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:3rem;opacity:0.15">${loc.icone}</div>`;
+      }
+      const scale = i === 0 ? 1 : 1 - i * 0.06;
+      const translateY = i * 14;
       card.style.transform = `scale(${scale}) translateY(${translateY}px)`;
       card.style.zIndex = 100 - i;
       if (i > 2) card.style.display = 'none';
-      const g = gradients[allLocations.indexOf(loc) % gradients.length];
-      card.innerHTML = `
-        <div class="swipe-card-stamp like">AJOUTER</div>
-        <div class="swipe-card-stamp nope">PASSER</div>
-        <div class="swipe-card-img">
-          <div class="swipe-card-gradient" style="background:${g}">
-            <span class="swipe-emoji">${loc.icone}</span>
-          </div>
-        </div>
-        <div class="swipe-card-body">
-          <div class="swipe-card-cat">${loc.categorie}</div>
-          <div class="swipe-card-name">${loc.nom}</div>
-          <div class="swipe-card-desc">${loc.description}</div>
-          <div class="swipe-card-meta">${(loc.tags||[]).map(t => `<span class="swipe-card-tag">${t}</span>`).join('')}</div>
-          <div class="swipe-card-footer">
-            <span class="swipe-card-stat"><strong>${loc.difficulte}</strong> Difficulte</span>
-            <span class="swipe-card-stat"><strong>${loc.altitude_recommandee}</strong> Altitude</span>
-            <span class="swipe-card-stat"><strong>${loc.meilleure_periode}</strong></span>
-          </div>
-        </div>
-      `;
       cards.appendChild(card);
     });
     counter.textContent = `${current + 1} / ${queue.length}`;
