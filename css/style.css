@@ -270,7 +270,6 @@ body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); c
 .map-fullscreen-btn { padding: 0.4rem 0.7rem; border-radius: 100px; border: 1px solid var(--border); background: rgba(0,0,0,0.5); color: var(--text2); font-size: 1rem; cursor: pointer; transition: all 0.3s; backdrop-filter: blur(10px); }
 .map-fullscreen-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
 .carte-wrapper.fullscreen { position: fixed; inset: 0; z-index: 9998; background: var(--bg); display: flex; flex-direction: column; padding: 0; }
-.carte-wrapper.fullscreen .section-header { display: none; }
 .carte-wrapper.fullscreen .main-map { height: 100vh; border-radius: 0; border: none; flex: 1; }
 .carte-wrapper.fullscreen .carte-controls { top: 0.5rem; right: 0.5rem; }
 .carte-wrapper.fullscreen .carte-filters { position: absolute; bottom: 0; left: 0; right: 0; z-index: 10; background: rgba(0,0,0,0.8); backdrop-filter: blur(15px); padding: 0.5rem 1rem; margin: 0; justify-content: center; border-top: 1px solid var(--border); }

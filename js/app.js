@@ -341,12 +341,16 @@ function initMainMap(data) {
   const wrapper = document.querySelector('.carte-wrapper');
   if (fsBtn) {
     fsBtn.addEventListener('click', () => {
-      wrapper.classList.toggle('fullscreen');
+      const isFullscreen = wrapper.classList.toggle('fullscreen');
+      const section = wrapper.closest('.section');
+      if (section) section.querySelector('.section-header').style.display = isFullscreen ? 'none' : '';
       setTimeout(() => map.invalidateSize(), 200);
     });
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && wrapper.classList.contains('fullscreen')) {
         wrapper.classList.remove('fullscreen');
+        const section = wrapper.closest('.section');
+        if (section) section.querySelector('.section-header').style.display = '';
         setTimeout(() => map.invalidateSize(), 200);
       }
     });
@@ -740,7 +744,7 @@ function initDJIImport() {
 /* ========== NAV HERO BEHAVIOR ========== */
 function initNavHeroBehavior() {
   const nav = document.querySelector('.nav');
-  const hero = document.getElementById('accueil');
+  const hero = document.getElementById('hero');
   if (!nav || !hero) return;
 
   const observer = new IntersectionObserver(entries => {
@@ -806,7 +810,8 @@ function initDJIAutoImport() {
   const importZone = document.getElementById('importZone');
   if (importZone) importZone.appendChild(importBtn);
 
-  importBtn.addEventListener('click', async () => {
+  importBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
     try {
       const dirHandle = await window.showDirectoryPicker({ mode: 'read' });
       const djiDir = await findDJIFolder(dirHandle);
