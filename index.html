@@ -127,13 +127,6 @@
         <p class="section-subtitle">Zones autorisées, lieux d'intérêt et lieux de vol</p>
       </div>
       <div class="carte-wrapper">
-        <div class="carte-controls">
-          <div class="carte-layer-group">
-            <button class="carte-layer active" data-layer="carte">Cartographie</button>
-            <button class="carte-layer" data-layer="satellite">Satellite</button>
-            <button class="carte-layer" data-layer="relief">Relief</button>
-          </div>
-        </div>
         <div class="carte-filters">
           <button class="zone-chip active" data-zone="all">Toutes</button>
           <button class="zone-chip" data-zone="libre" style="--chip-color:#22c55e">Libre</button>
@@ -142,8 +135,15 @@
           <button class="zone-chip" data-zone="lieux" style="--chip-color:#8b5cf6">Lieux</button>
           <button class="zone-chip" data-zone="gps" style="--chip-color:#3b82f6">📍 GPS</button>
         </div>
-        <button class="map-fullscreen-btn" id="mapFullscreen" title="Plein écran">⛶</button>
         <div id="mainMap" class="main-map"></div>
+        <div class="carte-controls">
+          <div class="carte-layer-group">
+            <button class="carte-layer active" data-layer="carte">Cartographie</button>
+            <button class="carte-layer" data-layer="satellite">Satellite</button>
+            <button class="carte-layer" data-layer="relief">Relief</button>
+          </div>
+        </div>
+        <button class="map-fullscreen-btn" id="mapFullscreen" title="Plein écran">⛶</button>
         <div class="carte-legend" id="carteLegend"></div>
       </div>
     </div>

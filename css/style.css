@@ -291,9 +291,12 @@ html.scroll-locked body { overflow: hidden; }
   .mobile-toggle { display: flex; }
   .masonry { columns: 1; }
   .sorties-grid { grid-template-columns: 1fr; }
-  .hero-drone { opacity: 0.3; }
+  .hero-drone { opacity: 0.25; left: 50%; top: 55%; transform: translate(-50%, -50%); }
+  .drone-img { width: clamp(160px, 50vw, 260px); }
   .meteo-wrap { grid-template-columns: 1fr; }
   .main-map { height: 350px; }
+  .carte-controls { position: relative; top: auto; right: auto; margin-bottom: 0.75rem; }
+  .carte-layer-group { justify-content: center; width: 100%; display: flex; flex-wrap: wrap; }
   .widgets-grid { grid-template-columns: 1fr; }
   .gps-info { grid-template-columns: 1fr; }
   .regles-vol ul { grid-template-columns: 1fr; }
@@ -303,4 +306,5 @@ html.scroll-locked body { overflow: hidden; }
   .mini-icon { font-size: 0.9rem; }
   .mini-val { font-size: 0.7rem; }
   .mini-label { font-size: 0.55rem; }
+  .map-fullscreen-btn { width: 38px; height: 38px; font-size: 1.1rem; }
 }
