@@ -1,4 +1,4 @@
-const CACHE_NAME = 'skyvision-v12';
+const CACHE_NAME = 'skyvision-v13';
 const BASE = self.location.pathname.replace(/\/[^/]*$/, '/');
 
 self.addEventListener('install', e => {

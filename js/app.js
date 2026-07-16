@@ -92,45 +92,13 @@ function initParticles() {
   }
 }
 
-/* ========== SORTIES ========== */
-function renderSorties(sorties) {
-  const g = document.getElementById('sortiesGrid');
-  g.innerHTML = sorties.map(s => `
-    <div class="sortie-card" data-sortie="${s.id}">
-      <div class="sortie-cover-wrap">
-        <img src="${s.cover}" alt="${s.titre}" onerror="this.style.display='none'">
-        <span class="sortie-badge">${s.stats.duree}</span>
-      </div>
-      <div class="sortie-info">
-        <div class="sortie-date">${new Date(s.date).toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'})}</div>
-        <h3 class="sortie-titre">${s.titre}</h3>
-        <div class="sortie-lieu">${s.lieu}</div>
-        <p class="sortie-desc">${s.description}</p>
-        <div class="sortie-stats">
-          <span class="sortie-stat"><strong>${s.stats.distance}</strong> distance</span>
-          <span class="sortie-stat"><strong>${s.stats.duree}</strong></span>
-          <span class="sortie-stat"><strong>${s.stats.altitude}</strong></span>
-        </div>
-      </div>
-    </div>
-  `).join('');
-
-  g.querySelectorAll('.sortie-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const id = card.dataset.sortie;
-      currentFilter = id;
-      document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === id));
-      filterGallery();
-    });
-  });
-}
-
 /* ========== GALLERY ========== */
-function renderFilters(sorties) {
+function renderFilters(defaultSorties) {
+  const customSorties = JSON.parse(localStorage.getItem('sv_custom_sorties') || '[]');
+  const allSorties = [...customSorties, ...(defaultSorties || [])];
   const f = document.getElementById('galleryFilters');
   f.innerHTML = `<button class="filter-btn active" data-filter="all">Toutes</button>` +
-    sorties.map(s => `<button class="filter-btn" data-filter="${s.id}">${s.titre}</button>`).join('');
+    allSorties.map(s => `<button class="filter-btn" data-filter="${s.id}">${s.titre}</button>`).join('');
   f.querySelectorAll('.filter-btn').forEach(b => {
     b.addEventListener('click', () => {
       f.querySelectorAll('.filter-btn').forEach(x => x.classList.remove('active'));
@@ -250,6 +218,12 @@ function initMainMap(data) {
     layers: [tileLayers.carte],
     scrollWheelZoom: false
   });
+
+  if ('geolocation' in navigator) {
+    navigator.geolocation.getCurrentPosition(pos => {
+      map.setView([pos.coords.latitude, pos.coords.longitude], 14);
+    }, () => {}, { enableHighAccuracy: true, timeout: 5000 });
+  }
 
   const zoneMarkers = [];
   const lieuMarkers = [];
@@ -652,39 +626,25 @@ function initDJIImport() {
   function classifyPhoto(img, file) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
-    const w = 64, h = 64;
-    canvas.width = w; canvas.height = h;
-    ctx.drawImage(img, 0, 0, w, h);
-    const data = ctx.getImageData(0, 0, w, h).data;
-
-    let r = 0, g = 0, b = 0, bright = 0;
-    let greenCount = 0, blueCount = 0, warmCount = 0;
+    canvas.width = 64; canvas.height = 64;
+    ctx.drawImage(img, 0, 0, 64, 64);
+    const data = ctx.getImageData(0, 0, 64, 64).data;
+    let r = 0, g = 0, b = 0, bright = 0, greenCount = 0, warmCount = 0, skinCount = 0;
     const total = data.length / 4;
-
     for (let i = 0; i < data.length; i += 4) {
       r += data[i]; g += data[i+1]; b += data[i+2];
-      const lum = (data[i] + data[i+1] + data[i+2]) / 3;
-      bright += lum;
+      bright += (data[i] + data[i+1] + data[i+2]) / 3;
       if (data[i+1] > data[i] + 20 && data[i+1] > data[i+2] + 20) greenCount++;
-      if (data[i+2] > data[i] && data[i+2] > data[i+1]) blueCount++;
-      if (data[i] > 150 && data[i+1] > 100) warmCount++;
+      if (data[i] > 150 && data[i+1] > 100 && data[i+2] < 120) warmCount++;
+      if (data[i] > 140 && data[i+1] > 100 && data[i+1] < 180 && data[i+2] > 80 && data[i+2] < 160) skinCount++;
     }
-
-    r /= total; g /= total; b /= total;
-    bright /= total;
+    const avgR = r / total, avgG = g / total, avgB = b / total;
     const greenPct = greenCount / total;
-    const bluePct = blueCount / total;
-
-    if (file.name.toUpperCase().includes('DJI') && file.name.toUpperCase().includes('PERSON') || file.name.toUpperCase().includes('DJI_') && bright > 120 && warmCount / total > 0.3) {
-      return 'personnes';
-    }
-    if (greenPct > 0.25) return 'nature';
-    if (bluePct > 0.25) return 'eau';
-    if (bright > 180 && bluePct < 0.15) return 'ciel';
-    if (r > 130 && g < 100 && b < 100) return 'batiments';
-    if (r > 150 && g > 100 && b < 80) return 'batiments';
-
-    return 'autre';
+    const avgBright = bright / total;
+    if (skinCount / total > 0.15 || warmCount / total > 0.2) return 'personnes';
+    if (greenPct > 0.25 || (avgBright > 150 && avgB > avgR * 0.8)) return 'paysage';
+    if ((avgR > 130 && avgG < 100 && avgB < 100) || (avgR > 150 && avgG > 100 && avgB < 80) || avgBright < 80) return 'batiments';
+    return 'paysage';
   }
 
   function handleFiles(files) {
@@ -708,8 +668,7 @@ function initDJIImport() {
   function renderImported() {
     const catsSet = [...new Set(importedPhotos.map(p => p.category))];
     const catLabels = {
-      personnes: '🧑 Personnes', animaux: '🐾 Animaux', batiments: '🏛️ Bâtiments',
-      nature: '🌿 Nature', eau: '💧 Eau', ciel: '☁️ Ciel', vehicules: '🚗 Véhicules', autre: '❓ Autre'
+      personnes: '🧑 Personnes', batiments: '🏛️ Bâtiments', paysage: '🌿 Paysage'
     };
 
     cats.innerHTML = `<button class="filter-btn active" data-cat="all">Toutes (${importedPhotos.length})</button>` +
@@ -973,60 +932,6 @@ function addSavedMarkersToMap(allLocations) {
   });
 }
 
-function buildCustomSortieGallery() {
-  const customSorties = JSON.parse(localStorage.getItem('sv_custom_sorties') || '[]');
-  customSorties.forEach(s => {
-    if (s.photos && s.photos.length) {
-      s.photos.forEach(photo => {
-        const cat = photo.categorie || classifyPhotoName(photo.src, photo.name);
-        allItems.push({
-          type: 'image',
-          src: photo.src,
-          alt: photo.name,
-          sortieId: s.id,
-          label: s.titre + ' — ' + cat
-        });
-      });
-    }
-    if (s.cover && !allItems.some(i => i.src === s.cover)) {
-      allItems.push({
-        type: 'image',
-        src: s.cover,
-        alt: s.titre,
-        sortieId: s.id,
-        label: s.titre
-      });
-    }
-  });
-}
-
-function classifyPhotoName(src, name) {
-  if (!src) return 'autre';
-  try {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    const c = document.createElement('canvas');
-    c.width = 64; c.height = 64;
-    const ctx = c.getContext('2d');
-    return new Promise(resolve => {
-      img.onload = () => {
-        ctx.drawImage(img, 0, 0, 64, 64);
-        const d = ctx.getImageData(0, 0, 64, 64).data;
-        let g = 0, b = 0, t = d.length / 4;
-        for (let i = 0; i < d.length; i += 4) {
-          if (d[i+1] > d[i] + 20 && d[i+1] > d[i+2] + 20) g++;
-          if (d[i+2] > d[i] && d[i+2] > d[i+1]) b++;
-        }
-        if (g / t > 0.25) resolve('nature');
-        else if (b / t > 0.25) resolve('eau');
-        else resolve('autre');
-      };
-      img.onerror = () => resolve('autre');
-      img.src = src;
-    });
-  } catch { return 'autre'; }
-}
-
 /* ========== SORTIE FORM ========== */
 function buildCustomSortieGallery() {
   const customSorties = JSON.parse(localStorage.getItem('sv_custom_sorties') || '[]');
@@ -1045,13 +950,12 @@ function buildCustomSortieGallery() {
 }
 
 function refreshSortiesAndGallery(defaultSorties, customSorties) {
+  renderFilters(defaultSorties);
   renderAllSorties(defaultSorties, customSorties);
-  if (window._galleryData && defaultSorties) {
-    allItems = [];
-    buildGalleryItems(window._galleryData, defaultSorties);
-    buildCustomSortieGallery();
-    filterGallery();
-  }
+  allItems = [];
+  buildGalleryItems(window._galleryData, defaultSorties);
+  buildCustomSortieGallery();
+  filterGallery();
 }
 
 function initSortieForm(defaultSorties) {
@@ -1350,14 +1254,25 @@ function classifyPhotoSimple(img) {
   const ctx = c.getContext('2d');
   ctx.drawImage(img, 0, 0, 64, 64);
   const d = ctx.getImageData(0, 0, 64, 64).data;
-  let g = 0, b = 0, t = d.length / 4;
+  let r = 0, g = 0, b = 0, bright = 0, warmCount = 0, skinCount = 0;
+  const t = d.length / 4;
   for (let i = 0; i < d.length; i += 4) {
+    r += d[i]; g += d[i+1]; b += d[i+2];
+    bright += (d[i] + d[i+1] + d[i+2]) / 3;
     if (d[i+1] > d[i] + 20 && d[i+1] > d[i+2] + 20) g++;
-    if (d[i+2] > d[i] && d[i+2] > d[i+1]) b++;
+    if (d[i] > 150 && d[i+1] > 100 && d[i+2] < 120) warmCount++;
+    if (d[i] > 140 && d[i+1] > 100 && d[i+1] < 180 && d[i+2] > 80 && d[i+2] < 160) skinCount++;
   }
-  if (g / t > 0.25) return 'nature';
-  if (b / t > 0.25) return 'eau';
-  return 'autre';
+  const greenPct = g / t;
+  const avgR = r / t, avgG = g / t, avgB = b / t;
+  const avgBright = bright / t;
+  if (skinCount / t > 0.15) return 'personnes';
+  if (warmCount / t > 0.2) return 'personnes';
+  if (greenPct > 0.25) return 'paysage';
+  if (avgBright > 150 && avgB > avgR * 0.8) return 'paysage';
+  if ((avgR > 130 && avgG < 100 && avgB < 100) || (avgR > 150 && avgG > 100 && avgB < 80)) return 'batiments';
+  if (avgBright < 80) return 'batiments';
+  return 'paysage';
 }
 
 function renderImportedFromImport() {
@@ -1365,8 +1280,7 @@ function renderImportedFromImport() {
   const cats = document.getElementById('importCategories');
   const catsSet = [...new Set(importedPhotos.map(p => p.category))];
   const catLabels = {
-    personnes: '🧑 Personnes', animaux: '🐾 Animaux', batiments: '🏛️ Bâtiments',
-    nature: '🌿 Nature', eau: '💧 Eau', ciel: '☁️ Ciel', vehicules: '🚗 Véhicules', autre: '❓ Autre'
+    personnes: '🧑 Personnes', batiments: '🏛️ Bâtiments', paysage: '🌿 Paysage'
   };
   cats.innerHTML = `<button class="filter-btn active" data-cat="all">Toutes (${importedPhotos.length})</button>` +
     catsSet.map(c => `<button class="filter-btn" data-cat="${c}">${catLabels[c] || c} (${importedPhotos.filter(p => p.category === c).length})</button>`).join('');
