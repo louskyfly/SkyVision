@@ -1027,9 +1027,20 @@ function initSortieForm(defaultSorties) {
         const img = new Image();
         img.onload = () => {
           const cat = classifyPhotoSimple(img);
-          pendingPhotos.push({ src: e.target.result, name: file.name, categorie: cat });
+          const canvas = document.createElement('canvas');
+          let w = img.width, h = img.height;
+          const max = 1200;
+          if (w > max || h > max) {
+            if (w > h) { h = Math.round(h * max / w); w = max; }
+            else { w = Math.round(w * max / h); h = max; }
+          }
+          canvas.width = w;
+          canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          const compressed = canvas.toDataURL('image/jpeg', 0.7);
+          pendingPhotos.push({ src: compressed, name: file.name, categorie: cat });
           if (photoPreview.style.display === 'none') {
-            photoImg.src = e.target.result;
+            photoImg.src = compressed;
             photoPreview.style.display = '';
             photoUpload.style.display = 'none';
           }
@@ -1065,7 +1076,12 @@ function initSortieForm(defaultSorties) {
     const idx = customSorties.findIndex(s => s.id === sortie.id);
     if (idx >= 0) customSorties[idx] = sortie;
     else customSorties.unshift(sortie);
-    localStorage.setItem('sv_custom_sorties', JSON.stringify(customSorties));
+    try {
+      localStorage.setItem('sv_custom_sorties', JSON.stringify(customSorties));
+    } catch (err) {
+      alert('Espace de stockage insuffisant. Essayez sans photo ou avec une photo plus petite.');
+      return;
+    }
     closeModal();
     window._customSorties = customSorties;
     refreshSortiesAndGallery(defaultSorties, customSorties);
@@ -1075,7 +1091,7 @@ function initSortieForm(defaultSorties) {
     if (!editId.value) return;
     if (!confirm('Supprimer cette sortie ?')) return;
     customSorties = customSorties.filter(s => s.id !== editId.value);
-    localStorage.setItem('sv_custom_sorties', JSON.stringify(customSorties));
+    try { localStorage.setItem('sv_custom_sorties', JSON.stringify(customSorties)); } catch {}
     closeModal();
     window._customSorties = customSorties;
     refreshSortiesAndGallery(defaultSorties, customSorties);
