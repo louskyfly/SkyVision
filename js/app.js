@@ -747,16 +747,26 @@ function initNavHeroBehavior() {
   const hero = document.getElementById('hero');
   if (!nav || !hero) return;
 
+  document.documentElement.classList.add('scroll-locked');
+
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         nav.classList.add('nav--hero');
+        document.documentElement.classList.add('scroll-locked');
       } else {
         nav.classList.remove('nav--hero');
+        document.documentElement.classList.remove('scroll-locked');
       }
     });
   }, { threshold: 0.3 });
   observer.observe(hero);
+
+  document.querySelectorAll('.nav-link, .mobile-link, .hero-buttons a').forEach(el => {
+    el.addEventListener('click', () => {
+      document.documentElement.classList.remove('scroll-locked');
+    });
+  });
 }
 
 /* ========== MINI WIDGETS (Hero) ========== */
