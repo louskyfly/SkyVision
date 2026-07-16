@@ -60,6 +60,28 @@
       <div class="hero-orb hero-orb-8"></div>
     </div>
     <div class="particles" id="particles"></div>
+    <div class="hero-mini-widgets" id="heroMiniWidgets">
+      <div class="mini-widget" id="miniMeteo">
+        <span class="mini-icon" id="miniMeteoIcon">☀️</span>
+        <span class="mini-val" id="miniMeteoTemp">--°</span>
+        <span class="mini-label">Météo</span>
+      </div>
+      <div class="mini-widget" id="miniWind">
+        <span class="mini-icon">💨</span>
+        <span class="mini-val" id="miniWindVal">-- km/h</span>
+        <span class="mini-label">Vent</span>
+      </div>
+      <div class="mini-widget" id="miniCompass">
+        <span class="mini-icon">🧭</span>
+        <span class="mini-val" id="miniCompassVal">--°</span>
+        <span class="mini-label">Cap</span>
+      </div>
+      <div class="mini-widget" id="miniAlti">
+        <span class="mini-icon">📏</span>
+        <span class="mini-val" id="miniAltiVal">-- m</span>
+        <span class="mini-label">Altitude</span>
+      </div>
+    </div>
     <div class="hero-content">
       <div class="hero-tag" id="heroTag">DJI Neo 2</div>
       <h1 class="hero-title" id="heroTitle">SkyVision</h1>
@@ -118,6 +140,8 @@
           <button class="zone-chip" data-zone="restreint" style="--chip-color:#eab308">Restreint</button>
           <button class="zone-chip" data-zone="interdit" style="--chip-color:#ef4444">Interdit</button>
           <button class="zone-chip" data-zone="lieux" style="--chip-color:#8b5cf6">Lieux</button>
+          <button class="zone-chip" data-zone="gps" style="--chip-color:#3b82f6">📍 GPS</button>
+          <button class="map-fullscreen-btn" id="mapFullscreen" title="Plein écran">⛶</button>
         </div>
         <div id="mainMap" class="main-map"></div>
         <div class="carte-legend" id="carteLegend"></div>

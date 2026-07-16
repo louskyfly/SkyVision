@@ -1,4 +1,4 @@
-const CACHE_NAME = 'skyvision-v5';
+const CACHE_NAME = 'skyvision-v6';
 const BASE = self.location.pathname.replace(/\/[^/]*$/, '/');
 const PRECACHE = [
   BASE,

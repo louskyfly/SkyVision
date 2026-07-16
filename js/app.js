@@ -253,6 +253,7 @@ function initMainMap(data) {
 
   const zoneMarkers = [];
   const lieuMarkers = [];
+  const gpsMapMarkers = [];
 
   zones.forEach(z => {
     const marker = L.circleMarker([z.lat, z.lng], {
@@ -281,6 +282,19 @@ function initMainMap(data) {
     lieuMarkers.push({ marker, lieu: l });
   });
 
+  gpsMarkers.forEach((m, i) => {
+    const marker = L.marker([m.lat, m.lng], {
+      icon: L.divIcon({
+        className: 'gps-user-marker',
+        html: '<div style="width:24px;height:24px;background:#3b82f6;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.4)"></div>',
+        iconSize: [24, 24],
+        iconAnchor: [12, 12]
+      })
+    }).addTo(map);
+    marker.bindPopup(`<div class="zone-popup"><h4>📌 ${m.label || 'Marqueur ' + (i+1)}</h4><p>${m.time || ''}</p></div>`);
+    gpsMapMarkers.push(marker);
+  });
+
   const legend = document.getElementById('carteLegend');
   legend.innerHTML = `
     <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>Zone libre (A)</div>
@@ -288,19 +302,18 @@ function initMainMap(data) {
     <div class="legend-item"><div class="legend-dot" style="background:#f97316"></div>Autorisation (C)</div>
     <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>Interdit (D)</div>
     <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>Lieu d'intérêt</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Marqueur GPS</div>
   `;
 
   document.querySelectorAll('.carte-layer').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.carte-layer').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      map.eachLayer(l => { if (l !== zoneMarkers[0]?.marker) map.removeLayer(l); });
+      map.eachLayer(l => map.removeLayer(l));
       tileLayers[btn.dataset.layer].addTo(map);
       zoneMarkers.forEach(z => z.marker.addTo(map));
       lieuMarkers.forEach(l => l.marker.addTo(map));
-      gpsMarkers.forEach(m => {
-        if (m.marker) m.marker.addTo(map);
-      });
+      gpsMapMarkers.forEach(m => m.addTo(map));
     });
   });
 
@@ -310,21 +323,37 @@ function initMainMap(data) {
       chip.classList.add('active');
       const z = chip.dataset.zone;
       zoneMarkers.forEach(({ marker, zone }) => {
-        if (z === 'all') { marker.addTo(map); }
+        if (z === 'all' || z === 'gps') { marker.addTo(map); }
         else if (z === 'lieux') { map.removeLayer(marker); }
         else { zone.type === z || zone.categorie === z ? marker.addTo(map) : map.removeLayer(marker); }
       });
       lieuMarkers.forEach(({ marker }) => {
-        z === 'all' || z === 'lieux' ? marker.addTo(map) : map.removeLayer(marker);
+        z === 'all' || z === 'lieux' || z === 'gps' ? marker.addTo(map) : map.removeLayer(marker);
+      });
+      gpsMapMarkers.forEach(m => {
+        z === 'all' || z === 'gps' ? m.addTo(map) : map.removeLayer(m);
       });
     });
   });
 
-  map.mainMap = map;
-  map.zoneMarkers = zoneMarkers;
-  map.lieuMarkers = lieuMarkers;
-  map.tileLayers = tileLayers;
+  // Fullscreen toggle
+  const fsBtn = document.getElementById('mapFullscreen');
+  const wrapper = document.querySelector('.carte-wrapper');
+  if (fsBtn) {
+    fsBtn.addEventListener('click', () => {
+      wrapper.classList.toggle('fullscreen');
+      setTimeout(() => map.invalidateSize(), 200);
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && wrapper.classList.contains('fullscreen')) {
+        wrapper.classList.remove('fullscreen');
+        setTimeout(() => map.invalidateSize(), 200);
+      }
+    });
+  }
+
   window._mainMap = map;
+  window._gpsMapMarkers = gpsMapMarkers;
 }
 
 /* ========== FUTURE MAP (Legacy section removed, merged into main map) ========== */
@@ -514,6 +543,7 @@ function initGPS() {
           })
         }).addTo(window._mainMap);
         marker.bindPopup(`<div class="zone-popup"><h4>📌 ${m.label}</h4><p>${m.time}</p></div>`);
+        if (window._gpsMapMarkers) window._gpsMapMarkers.push(marker);
       }
     });
   });
@@ -707,6 +737,163 @@ function initDJIImport() {
   }
 }
 
+/* ========== NAV HERO BEHAVIOR ========== */
+function initNavHeroBehavior() {
+  const nav = document.querySelector('.nav');
+  const hero = document.getElementById('accueil');
+  if (!nav || !hero) return;
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        nav.classList.add('nav--hero');
+      } else {
+        nav.classList.remove('nav--hero');
+      }
+    });
+  }, { threshold: 0.3 });
+  observer.observe(hero);
+}
+
+/* ========== MINI WIDGETS (Hero) ========== */
+function initMiniWidgets() {
+  // Meteo mini
+  API.load('meteo.json').then(data => {
+    if (!data) return;
+    const ic = document.getElementById('miniMeteoIcon');
+    const temp = document.getElementById('miniMeteoTemp');
+    const wind = document.getElementById('miniWindVal');
+    if (ic) ic.textContent = data.icone || '☀️';
+    if (temp) temp.textContent = (data.temperature || '--') + '°';
+    if (wind) wind.textContent = (data.vent?.vitesse || '--') + ' km/h';
+  });
+
+  // Compass mini
+  function handleOrientationMini(e) {
+    if (e.alpha !== null) {
+      const deg = Math.round(e.alpha);
+      const el = document.getElementById('miniCompassVal');
+      if (el) el.textContent = deg + '°';
+    }
+  }
+  if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    document.addEventListener('click', () => {
+      DeviceOrientationEvent.requestPermission().then(r => {
+        if (r === 'granted') window.addEventListener('deviceorientation', handleOrientationMini);
+      }).catch(() => {});
+    }, { once: true });
+  } else {
+    window.addEventListener('deviceorientation', handleOrientationMini);
+  }
+
+  // Alti mini
+  if ('geolocation' in navigator) {
+    navigator.geolocation.getCurrentPosition(pos => {
+      const alt = Math.round(pos.coords.altitude || 0);
+      const el = document.getElementById('miniAltiVal');
+      if (el) el.textContent = alt > 0 ? alt + ' m' : 'N/A';
+    }, () => {});
+  }
+}
+
+/* ========== DJI FLY AUTO-IMPORT ========== */
+function initDJIAutoImport() {
+  if (!('showDirectoryPicker' in window)) return;
+  const importBtn = document.createElement('button');
+  importBtn.className = 'btn btn-sm btn-outline';
+  importBtn.textContent = '📂 Scanner dossier DJI Fly';
+  importBtn.style.marginTop = '0.5rem';
+  const importZone = document.getElementById('importZone');
+  if (importZone) importZone.appendChild(importBtn);
+
+  importBtn.addEventListener('click', async () => {
+    try {
+      const dirHandle = await window.showDirectoryPicker({ mode: 'read' });
+      const djiDir = await findDJIFolder(dirHandle);
+      if (!djiDir) { alert('Dossier DJI Fly non trouvé. Sélectionnez le dossier DCIM.'); return; }
+      await scanAndImport(djiDir);
+    } catch (e) {
+      if (e.name !== 'AbortError') console.warn('DJI import error:', e);
+    }
+  });
+
+  async function findDJIFolder(handle) {
+    for await (const [name, entry] of handle) {
+      if (entry.kind === 'directory' && name.toUpperCase().includes('DJI')) return entry;
+      if (entry.kind === 'directory' && name.toUpperCase() === 'DCIM') {
+        for await (const [n, e] of entry) {
+          if (e.kind === 'directory' && n.toUpperCase().includes('DJI')) return e;
+        }
+      }
+    }
+    return null;
+  }
+
+  async function scanAndImport(dirHandle) {
+    const files = [];
+    for await (const [name, entry] of dirHandle) {
+      if (entry.kind === 'file' && /\.(jpg|jpeg|png|heic)$/i.test(name)) files.push(entry);
+    }
+    for (const file of files) {
+      const f = await file.getFile();
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = new Image();
+        img.onload = () => {
+          const cat = classifyPhotoSimple(img);
+          importedPhotos.push({ name: f.name, src: e.target.result, category: cat });
+          renderImportedFromImport();
+          addImportedToGallery(f.name, e.target.result, cat);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(f);
+    }
+  }
+}
+
+function classifyPhotoSimple(img) {
+  const c = document.createElement('canvas');
+  c.width = 64; c.height = 64;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0, 64, 64);
+  const d = ctx.getImageData(0, 0, 64, 64).data;
+  let g = 0, b = 0, t = d.length / 4;
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i+1] > d[i] + 20 && d[i+1] > d[i+2] + 20) g++;
+    if (d[i+2] > d[i] && d[i+2] > d[i+1]) b++;
+  }
+  if (g / t > 0.25) return 'nature';
+  if (b / t > 0.25) return 'eau';
+  return 'autre';
+}
+
+function renderImportedFromImport() {
+  const grid = document.getElementById('importGrid');
+  const cats = document.getElementById('importCategories');
+  const catsSet = [...new Set(importedPhotos.map(p => p.category))];
+  const catLabels = {
+    personnes: '🧑 Personnes', animaux: '🐾 Animaux', batiments: '🏛️ Bâtiments',
+    nature: '🌿 Nature', eau: '💧 Eau', ciel: '☁️ Ciel', vehicules: '🚗 Véhicules', autre: '❓ Autre'
+  };
+  cats.innerHTML = `<button class="filter-btn active" data-cat="all">Toutes (${importedPhotos.length})</button>` +
+    catsSet.map(c => `<button class="filter-btn" data-cat="${c}">${catLabels[c] || c} (${importedPhotos.filter(p => p.category === c).length})</button>`).join('');
+  grid.innerHTML = importedPhotos.map(p => `
+    <div class="photo-card">
+      <img src="${p.src}" alt="${p.name}" loading="lazy">
+      <div class="photo-card-info">
+        <div class="photo-card-name">${p.name}</div>
+        <span class="photo-category ${p.category}">${p.category}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addImportedToGallery(name, src, cat) {
+  allItems.push({ type: 'image', src, alt: name, sortieId: 'all', label: name });
+  if (currentFilter === 'all') filterGallery();
+}
+
 /* ========== ANIMATIONS ========== */
 function initAnimations() {
   gsap.registerPlugin(ScrollTrigger);
@@ -769,6 +956,8 @@ async function load() {
     filterGallery();
   }
 
+  gpsMarkers = JSON.parse(localStorage.getItem('sv_gps_markers') || '[]');
+
   initMainMap({
     zones: zonesData?.zones || [],
     lieux: lieuxData || []
@@ -788,6 +977,9 @@ async function load() {
   initGPS();
   initWidgets();
   initDJIImport();
+  initMiniWidgets();
+  initDJIAutoImport();
+  initNavHeroBehavior();
 
   setTimeout(() => { initAnimations(); initLenis(); }, 100);
 }
