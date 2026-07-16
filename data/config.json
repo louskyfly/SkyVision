@@ -1,0 +1,19 @@
+{
+  "site": {
+    "title": "SkyVision",
+    "tagline": "Capturer l'infini depuis les cieux",
+    "description": "Portfolio de prises de vues aériennes par drone. Photos, vidéos et souvenirs de vol.",
+    "drone": "DJI Neo 2"
+  },
+  "stats": [
+    { "value": "0", "suffix": "+", "label": "Vols effectués" },
+    { "value": "0", "suffix": "+", "label": "Heures de vol" },
+    { "value": "0", "suffix": "+", "label": "Photos" },
+    { "value": "0", "suffix": "", "label": "Vidéos" }
+  ],
+  "social": {
+    "youtube": "#",
+    "instagram": "#",
+    "tiktok": "#"
+  }
+}

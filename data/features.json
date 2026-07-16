@@ -1,0 +1,42 @@
+{
+  "title": "Caractéristiques",
+  "subtitle": "Conçu pour impressionner.",
+  "items": [
+    {
+      "icon": "video",
+      "title": "4K HDR",
+      "description": "Enregistrez des vidéos époustouflantes en 4K avec un dynamisme chromatique exceptionnel.",
+      "stat": "4K"
+    },
+    {
+      "icon": "brain",
+      "title": "IA embarquée",
+      "description": "Un algorithme de vision artificielle qui anticipe et s'adapte en temps réel.",
+      "stat": "AI"
+    },
+    {
+      "icon": "crosshair",
+      "title": "Suivi intelligent",
+      "description": "Suivi de sujet précis et fluide grâce à la reconnaissance 3D.",
+      "stat": "3D"
+    },
+    {
+      "icon": "feather",
+      "title": "Ultra léger",
+      "description": "Moins de 250g. Aucune inscription requise dans la plupart des pays.",
+      "stat": "136g"
+    },
+    {
+      "icon": "zap",
+      "title": "Décollage instantané",
+      "description": "Décollez depuis votre paume en une seconde. Pas de télécommande nécessaire.",
+      "stat": "1s"
+    },
+    {
+      "icon": "wifi",
+      "title": "Transmission HD",
+      "description": "Flux vidéo en direct jusqu'à 13 km avec latence minimale.",
+      "stat": "13km"
+    }
+  ]
+}

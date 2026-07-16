@@ -1,0 +1,10 @@
+{
+  "tagline": "Nouveau",
+  "title": "DJI Neo 2",
+  "subtitle": "Le drone intelligent nouvelle génération.",
+  "description": "Ultra léger. Ultra intelligent. Prêt en une seconde.",
+  "buttons": {
+    "primary": { "label": "Découvrir", "href": "#features" },
+    "secondary": { "label": "Voir la vidéo", "href": "#video" }
+  }
+}

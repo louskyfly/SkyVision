@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkyVision — Portfolio Drone</title>
+  <meta name="description" content="Portfolio de prises de vues aériennes par drone. Photos, vidéos et souvenirs de vol.">
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SkyVision">
+  <link rel="apple-touch-icon" href="assets/images/icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+  <div class="page-transition" id="pageTransition"></div>
+  <div class="noise"></div>
+  <div class="glow" id="glow"></div>
+  <div class="scroll-bar" id="scrollBar"></div>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo" id="siteTitle">SkyVision</a>
+      <div class="nav-links" id="navLinks">
+        <div class="nav-bubble" id="navBubble"></div>
+        <a href="#sorties">Sorties</a>
+        <a href="#gallery">Galerie</a>
+        <a href="#future">Future Sortie</a>
+        <a href="#meteo">Météo</a>
+      </div>
+      <div class="mobile-toggle" id="mobileToggle"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#sorties">Sorties</a>
+    <a href="#gallery">Galerie</a>
+        <a href="#future">Future Sortie</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+      <div class="hero-orb hero-orb-3"></div>
+      <div class="hero-orb hero-orb-4"></div>
+      <div class="hero-orb hero-orb-5"></div>
+      <div class="hero-orb hero-orb-6"></div>
+      <div class="hero-orb hero-orb-7"></div>
+      <div class="hero-orb hero-orb-8"></div>
+    </div>
+    <div class="particles"></div>
+    <div class="hero-content">
+      <div class="hero-tag" id="heroTag">DJI Neo 2</div>
+      <h1 class="hero-title" id="heroTitle">SkyVision</h1>
+      <p class="hero-subtitle" id="heroSubtitle">Capturer l'infini depuis les cieux</p>
+      <div class="hero-buttons">
+        <a href="#sorties" class="btn btn-primary">Découvrir les sorties</a>
+        <a href="#gallery" class="btn btn-accent">Voir la galerie</a>
+      </div>
+    </div>
+    <!-- 3D DRONE -->
+    <div class="drone-3d">
+      <img src="assets/images/dji-neo-2.png" alt="DJI Neo 2">
+      <div class="drone-shadow"></div>
+    </div>
+  </section>
+
+  <!-- SORTIES -->
+  <section class="section" id="sorties">
+    <div class="container section-center">
+      <h2 style="font-size:clamp(2rem,4vw,3.5rem);margin-bottom:12px">Mes sorties drone</h2>
+      <p style="color:var(--text2);margin-bottom:60px;max-width:500px;margin-left:auto;margin-right:auto">Chaque vol raconte une histoire. Découvrez mes différentes sorties et les paysages capturés.</p>
+      <div class="sorties-grid" id="sortiesGrid"></div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="section" id="gallery" style="background:var(--bg2)">
+    <div class="container section-center">
+      <h2 style="font-size:clamp(2rem,4vw,3.5rem);margin-bottom:12px">Galerie</h2>
+      <p style="color:var(--text2);margin-bottom:40px">Photos et vidéos capturées en vol.</p>
+      <div class="gallery-filters" id="galleryFilters"></div>
+      <div class="masonry" id="masonryGrid"></div>
+    </div>
+  </section>
+
+  <!-- FUTURE SORTIE -->
+  <section class="section" id="future">
+    <div class="container section-center">
+      <h2 style="font-size:clamp(2rem,4vw,3.5rem);margin-bottom:12px">Future Sortie</h2>
+      <p style="color:var(--text2);margin-bottom:40px;max-width:550px;margin-left:auto;margin-right:auto">Les lieux que je veux explorer avec mon drone. Clique sur un marker pour les détails.</p>
+      <div id="futureMap" class="future-map"></div>
+      <div class="future-legend" id="futureLegend"></div>
+    </div>
+  </section>
+
+  <!-- METEO -->
+  <section class="section" id="meteo" style="background:var(--bg2)">
+    <div class="container section-center">
+      <h2 style="font-size:clamp(2rem,4vw,3.5rem);margin-bottom:40px">Météo du jour</h2>
+      <div class="meteo-wrap" id="meteoWrap"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <a href="#" class="nav-logo">SkyVision</a>
+      </div>
+      <div class="footer-copy">&copy; 2026 SkyVision</div>
+    </div>
+  </footer>
+
+  <!-- LIGHTBOX -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close">&times;</button>
+    <button class="lightbox-nav lightbox-prev">&larr;</button>
+    <button class="lightbox-nav lightbox-next">&rarr;</button>
+    <div class="lightbox-content"></div>
+    <div class="lightbox-counter"></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>

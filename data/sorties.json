@@ -1,0 +1,49 @@
+{
+  "sorties": [
+    {
+      "id": "sortie-1",
+      "titre": "Premier vol",
+      "date": "2026-01-15",
+      "lieu": "Marsillargues",
+      "description": "Mon tout premier vol avec le DJI Neo 2. Découverte des fonctionnalités et premières prises de vue.",
+      "cover": "assets/images/sortie1-cover.jpg",
+      "stats": { "distance": "2.5 km", "duree": "12 min", "altitude": "50 m" }
+    },
+    {
+      "id": "sortie-2",
+      "titre": "Coucher de soleil",
+      "date": "2026-02-20",
+      "lieu": "La Grande Motte",
+      "description": "Vol au coucher du soleil sur la côte méditerranéenne. Lumière dorée et reflets sur la mer.",
+      "cover": "assets/images/sortie2-cover.jpg",
+      "stats": { "distance": "4.2 km", "duree": "22 min", "altitude": "80 m" }
+    },
+    {
+      "id": "sortie-3",
+      "titre": "Montagne enneigée",
+      "date": "2026-03-10",
+      "lieu": "Cévennes",
+      "description": "Vol au-dessus des sommets enneigés des Cévennes. Panoramas époustouflants.",
+      "cover": "assets/images/sortie3-cover.jpg",
+      "stats": { "distance": "6.1 km", "duree": "28 min", "altitude": "120 m" }
+    },
+    {
+      "id": "sortie-4",
+      "titre": "Village médiéval",
+      "date": "2026-04-05",
+      "lieu": "Aigues-Mortes",
+      "description": "Survol de la cité médiévale d'Aigues-Mortes et des salins.",
+      "cover": "assets/images/sortie4-cover.jpg",
+      "stats": { "distance": "3.8 km", "duree": "18 min", "altitude": "60 m" }
+    },
+    {
+      "id": "sortie-5",
+      "titre": "Randonnée aérienne",
+      "date": "2026-05-12",
+      "lieu": "Saint-Guilhem-le-Désert",
+      "description": "Vol de reconnaissance au-dessus du village et de la vallée de l'Hérault.",
+      "cover": "assets/images/sortie5-cover.jpg",
+      "stats": { "distance": "5.5 km", "duree": "25 min", "altitude": "100 m" }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+@media (max-width: 1024px) {
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .camera-section .camera-grid { grid-template-columns: 1fr; gap: 48px; }
+  .reviews-grid { grid-template-columns: repeat(2, 1fr); }
+  .gallery-masonry { columns: 2; }
+}
+@media (max-width: 768px) {
+  .section { padding: 100px 0; }
+  .nav-links { display: none; }
+  .nav-mobile-toggle { display: flex; }
+  .features-grid { grid-template-columns: 1fr; }
+  .modes-grid { grid-template-columns: 1fr; }
+  .autonomy-stats { grid-template-columns: repeat(2, 1fr); }
+  .camera-stats { grid-template-columns: repeat(2, 1fr); }
+  .reviews-grid { grid-template-columns: 1fr; }
+  .gallery-masonry { columns: 1; }
+  .comparison-table { font-size: 0.8rem; }
+  .comparison-table th, .comparison-table td { padding: 12px 10px; }
+  .hero-title { font-size: clamp(3rem, 12vw, 5rem); }
+  .hero-drone { max-width: 100%; }
+  .cursor { display: none; }
+}
+@media (max-width: 480px) {
+  .hero-buttons { flex-direction: column; align-items: center; }
+  .btn { width: 100%; justify-content: center; }
+  .autonomy-stats { grid-template-columns: 1fr; }
+}

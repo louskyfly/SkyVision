@@ -1,0 +1,28 @@
+{
+  "galleries": {
+    "all": {
+      "titre": "Toutes les captures",
+      "items": []
+    },
+    "sortie-1": {
+      "titre": "Premier vol",
+      "items": []
+    },
+    "sortie-2": {
+      "titre": "Coucher de soleil",
+      "items": []
+    },
+    "sortie-3": {
+      "titre": "Montagne enneigée",
+      "items": []
+    },
+    "sortie-4": {
+      "titre": "Village médiéval",
+      "items": []
+    },
+    "sortie-5": {
+      "titre": "Randonnée aérienne",
+      "items": []
+    }
+  }
+}

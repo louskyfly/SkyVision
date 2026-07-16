@@ -1,0 +1,162 @@
+[
+  {
+    "nom": "Château Montferrand",
+    "description": "Château médiéval au cœur du massif du Pic Saint-Loup, dominant la plaine et la mer.",
+    "lat": 43.7753,
+    "lng": 3.8400,
+    "categorie": "Château",
+    "icone": "🏰"
+  },
+  {
+    "nom": "Lac du Salagou",
+    "description": "Grand lac artificiel entouré de ruffes rouges et de garrigues.",
+    "lat": 43.6549,
+    "lng": 3.3678,
+    "categorie": "Nature",
+    "icone": "💧"
+  },
+  {
+    "nom": "Lac de la Jasse",
+    "description": "Petit lac de montagne avec vue sur le Pic Saint-Loup, paisible et préservé.",
+    "lat": 43.7823,
+    "lng": 3.7757,
+    "categorie": "Nature",
+    "icone": "💧"
+  },
+  {
+    "nom": "Parc de Palavas — Musée Dubout",
+    "description": "Parc du Levant à Palavas-les-Flots avec le musée Albert Dubout.",
+    "lat": 43.5369,
+    "lng": 3.9111,
+    "categorie": "Littoral",
+    "icone": "🏖️"
+  },
+  {
+    "nom": "Pont du Diable — Saint-Guilhem-le-Désert",
+    "description": "Pont médiéval classé, passage vers l'abbaye de Saint-Guilhem-le-Désert.",
+    "lat": 43.7076,
+    "lng": 3.5574,
+    "categorie": "Patrimoine",
+    "icone": "🌉"
+  },
+  {
+    "nom": "Château d'Aumelas",
+    "description": "Château-fort perché à 289m d'altitude, dominant un vaste panorama sur la garrigue.",
+    "lat": 43.5977,
+    "lng": 3.6088,
+    "categorie": "Château",
+    "icone": "🏰"
+  },
+  {
+    "nom": "Canyon du Diable — Cirque d'Agaras",
+    "description": "Colorado languedocien aux ruffes rouges, paysages surréalistes sculptés par l'érosion.",
+    "lat": 43.6994,
+    "lng": 3.4522,
+    "categorie": "Nature",
+    "icone": "🏜️"
+  },
+  {
+    "nom": "Petit Colorado",
+    "description": "Formation rocheuse rouge spectaculaire, clone du Colorado au cœur de l'Hérault.",
+    "lat": 43.7007,
+    "lng": 3.4558,
+    "categorie": "Nature",
+    "icone": "🏜️"
+  },
+  {
+    "nom": "Cathédrale de Maguelone",
+    "description": "Cathédrale romane du XIIe siècle sur un promontoire entre étangs et mer.",
+    "lat": 43.5125,
+    "lng": 3.8833,
+    "categorie": "Patrimoine",
+    "icone": "⛪"
+  },
+  {
+    "nom": "Gorges d'Héric — Mons-la-Trivalle",
+    "description": "Gorges spectaculaires au pied du Caroux, avec cascades et rochers rouges.",
+    "lat": 43.5845,
+    "lng": 2.9605,
+    "categorie": "Nature",
+    "icone": "🏞️"
+  },
+  {
+    "nom": "Chapelle Saint-Fulcran",
+    "description": "Chapelle historique au cœur de Lodève, patrimoine religieux médiéval.",
+    "lat": 43.7319,
+    "lng": 3.3172,
+    "categorie": "Patrimoine",
+    "icone": "⛪"
+  },
+  {
+    "nom": "Château de Viviourès",
+    "description": "Château perché sur un pic à 320m, au bout de la montagne de l'Hortus.",
+    "lat": 43.7931,
+    "lng": 3.8198,
+    "categorie": "Château",
+    "icone": "🏰"
+  },
+  {
+    "nom": "Lac de Cécéles",
+    "description": "Lac de barrage niché dans la garrigue, au pied du Pic Saint-Loup.",
+    "lat": 43.7627,
+    "lng": 3.8870,
+    "categorie": "Nature",
+    "icone": "💧"
+  },
+  {
+    "nom": "Oppidum d'Ensérune",
+    "description": "Site archéologique gaulois dominant l'étang thau et les canaux.",
+    "lat": 43.3061,
+    "lng": 3.1380,
+    "categorie": "Patrimoine",
+    "icone": "🏛️"
+  },
+  {
+    "nom": "Aqueduc de Castries",
+    "description": "Aqueduc du XVIIe siècle construit par Riquet, 7km de canaux en pierre.",
+    "lat": 43.6942,
+    "lng": 3.9840,
+    "categorie": "Patrimoine",
+    "icone": "🏛️"
+  },
+  {
+    "nom": "Abbaye Saint-Félix de Monceau",
+    "description": "Ancienne abbaye bénédictine du XIe siècle à Gigan, entourée de vignes.",
+    "lat": 43.4910,
+    "lng": 3.7130,
+    "categorie": "Patrimoine",
+    "icone": "⛪"
+  },
+  {
+    "nom": "Minerve",
+    "description": "Village perché classé, aux deux gorges naturelles et aux ponts naturels.",
+    "lat": 43.3547,
+    "lng": 2.7472,
+    "categorie": "Village",
+    "icone": "🏘️"
+  },
+  {
+    "nom": "Écluses & Pont-Canal de Béziers",
+    "description": "Les 9 écluses de Fonseranes et le pont-canal sur l'Orb, patrimoine UNESCO.",
+    "lat": 43.3344,
+    "lng": 3.2128,
+    "categorie": "Patrimoine",
+    "icone": "🌊"
+  },
+  {
+    "nom": "Le Caroux",
+    "description": "Montagne emblématique du Haut-Languedoc, 1091m de sommet aux pentes abruptes.",
+    "lat": 43.5906,
+    "lng": 3.0122,
+    "categorie": "Nature",
+    "icone": "⛰️"
+  },
+  {
+    "nom": "Cirque de Mourèze",
+    "description": "Cirque naturel aux pinacles calcaires, champ de rochers sculptés par l'érosion.",
+    "lat": 43.6172,
+    "lng": 3.3611,
+    "categorie": "Nature",
+    "icone": "🏜️"
+  }
+]

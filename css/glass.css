@@ -1,0 +1,91 @@
+/* === LIQUID GLASS CARD === */
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-radius: var(--radius-lg);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.02) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+.glass:hover {
+  border-color: rgba(255,255,255,0.15);
+  background: var(--glass-hover);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+.glass-static {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+}
+.glass-static::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Liquid glass button */
+.btn-liquid {
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
+  border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 100px;
+  padding: 16px 40px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+}
+.btn-liquid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.btn-liquid:hover::before { opacity: 1; }
+.btn-liquid:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 40px rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.35);
+}
+
+/* Glass reflection effect */
+.glass-reflection {
+  position: relative;
+}
+.glass-reflection::after {
+  content: '';
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+.glass-reflection:hover::after { opacity: 1; }

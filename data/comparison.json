@@ -1,0 +1,49 @@
+{
+  "title": "Comparaison",
+  "subtitle": "Pourquoi le Neo 2 ?",
+  "products": [
+    {
+      "name": "Neo",
+      "image": "assets/images/neo.png",
+      "specs": {
+        "Poids": "136g",
+        "Caméra": "4K/30fps",
+        "IA": "Basique",
+        "Autonomie": "18 min",
+        "Stabilisation": "Électronique",
+        "Suivi": "Standard",
+        "Décollage": "Paume",
+        "Prix": "199€"
+      }
+    },
+    {
+      "name": "Neo 2",
+      "image": "assets/images/neo2.png",
+      "highlight": true,
+      "specs": {
+        "Poids": "136g",
+        "Caméra": "4K/60fps HDR",
+        "IA": "Avancée",
+        "Autonomie": "32 min",
+        "Stabilisation": "Mécanique 3 axes",
+        "Suivi": "Intelligent 3D",
+        "Décollage": "Paume + Télécommande",
+        "Prix": "329€"
+      }
+    },
+    {
+      "name": "Mini 4 Pro",
+      "image": "assets/images/mini4pro.png",
+      "specs": {
+        "Poids": "249g",
+        "Caméra": "4K/100fps",
+        "IA": "Avancée",
+        "Autonomie": "34 min",
+        "Stabilisation": "Mécanique 3 axes",
+        "Suivi": "APAS 5.0",
+        "Décollage": "Télécommande",
+        "Prix": "759€"
+      }
+    }
+  ]
+}

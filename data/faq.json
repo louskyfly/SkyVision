@@ -1,0 +1,33 @@
+{
+  "title": "Questions fréquentes",
+  "items": [
+    {
+      "question": "Le DJI Neo 2 nécessite-t-il une inscription ?",
+      "answer": "Avec un poids de seulement 136g, le DJI Neo 2 ne nécessite généralement pas d'enregistrement auprès des autorités dans la plupart des pays. Vérifiez toutefois la réglementation locale."
+    },
+    {
+      "question": "Quelle est la durée d'autonomie du DJI Neo 2 ?",
+      "answer": "Le DJI Neo 2 offre jusqu'à 32 minutes de vol, soit presque le double du Neo original. La charge rapide permet de retrouver 80% en seulement 45 minutes."
+    },
+    {
+      "question": "Peut-on l'utiliser sans télécommande ?",
+      "answer": "Oui ! Le DJI Neo 2 décolle directement depuis votre paume. Un simple geste suffit pour démarrer l'enregistrement. Vous pouvez aussi utiliser la télécommande ou votre smartphone pour un contrôle plus précis."
+    },
+    {
+      "question": "Quelle est la qualité de la caméra ?",
+      "answer": "Le DJI Neo 2 embarque un capteur 1/1.3\" CMOS capable de filmer en 4K à 60fps avec HDR. La stabilisation mécanique à 3 axes garantit des images fluides même en mouvement."
+    },
+    {
+      "question": "Le tracking IA fonctionne-t-il bien ?",
+      "answer": "Absolument. Le système de suivi intelligent 3D utilise des algorithmes de vision artificielle de dernière génération pour reconnaître et suivre les sujets avec une précision remarquable, même dans des environnements complexes."
+    },
+    {
+      "question": "Quelle est la portée de transmission vidéo ?",
+      "answer": "Le DJI Neo 2 offre une portée de transmission vidéo HD jusqu'à 13 km grâce à la technologie O4, avec un flux en temps réel et une latence minimale."
+    },
+    {
+      "question": "Le DJI Neo 2 est-il résistant à la pluie ?",
+      "answer": "Le DJI Neo 2 possède une résistance au vent de niveau 5 (jusqu'à 10.7 m/s). Bien qu'il ne soit pas officiellement étanche, il peut supporter une légère bruine. Nous recommandons d'éviter les conditions pluvieuses."
+    }
+  ]
+}

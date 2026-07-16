@@ -1,0 +1,42 @@
+{
+  "title": "Modes intelligents",
+  "subtitle": "L'IA s'occupe de tout.",
+  "subtitleDescription": "Concentrez-vous sur votre moment. Le drone fait le reste.",
+  "modes": [
+    {
+      "icon": "navigation",
+      "name": "Follow",
+      "description": "Vous suit de façon naturelle tout en s'adaptant à l'environnement."
+    },
+    {
+      "icon": "orbit",
+      "name": "Orbit",
+      "description": "Boucle autour de vous avec un mouvement cinématique parfait."
+    },
+    {
+      "icon": "sparkles",
+      "name": "QuickShots",
+      "description": "Séquences de vol automatisées avec montage intégré."
+    },
+    {
+      "icon": "arrow-up-right",
+      "name": "Dronie",
+      "description": "S'élève en s'éloignant pour un plan spectaculaire."
+    },
+    {
+      "icon": "rocket",
+      "name": "Rocket",
+      "description": "Monte verticalement tout en vous gardant au centre."
+    },
+    {
+      "icon": "repeat",
+      "name": "Boomerang",
+      "description": "Décrit une trajectoire en ellipse dynamique."
+    },
+    {
+      "icon": "scan-eye",
+      "name": "Tracking IA",
+      "description": "Reconnaissance de sujets multiples avec prédiction de mouvement."
+    }
+  ]
+}

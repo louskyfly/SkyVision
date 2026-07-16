@@ -1,0 +1,32 @@
+{
+  "lieu": "Montpellier",
+  "date": "2026-07-15",
+  "icone": "☀️",
+  "resume": "Ensoleillé",
+  "temperature": 28,
+  "ressenti": 30,
+  "min": 18,
+  "max": 32,
+  "humidite": 45,
+  "vent": {
+    "vitesse": 18,
+    "rafales": 28,
+    "direction": "SO",
+    "degres": 225
+  },
+  "pression": 1018,
+  "indice_uv": 7,
+  "visibilite": 15,
+  "point_de_rosee": 14,
+  "nuages": 10,
+  "precipitations": 0,
+  "lever_soleil": "06:22",
+  "coucher_soleil": "21:18",
+  "previsions": [
+    { "jour": "Mer", "icone": "⛅", "max": 27, "min": 17 },
+    { "jour": "Jeu", "icone": "🌧️", "max": 22, "min": 15 },
+    { "jour": "Ven", "icone": "☀️", "max": 30, "min": 19 },
+    { "jour": "Sam", "icone": "☀️", "max": 31, "min": 20 },
+    { "jour": "Dim", "icone": "⛅", "max": 26, "min": 16 }
+  ]
+}

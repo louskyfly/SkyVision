@@ -1,0 +1,15 @@
+{
+  "drone": {
+    "nom": "DJI Neo 2",
+    "poids": "136g",
+    "camera": "4K/60fps HDR",
+    "autonomie": "32 min",
+    "portee": "13 km"
+  },
+  "stats": [
+    { "icon": "camera", "value": "4K", "label": "Résolution max" },
+    { "icon": "clock", "value": "32", "label": "Min d'autonomie" },
+    { "icon": "ruler", "value": "13km", "label": "Portée vidéo" },
+    { "icon": "feather", "value": "136g", "label": "Ultra léger" }
+  ]
+}

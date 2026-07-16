@@ -1,0 +1,47 @@
+{
+  "title": "Ce qu'en disent les utilisateurs",
+  "reviews": [
+    {
+      "name": "Marie L.",
+      "role": "Vlogueuse voyage",
+      "avatar": "ML",
+      "rating": 5,
+      "text": "Le Neo 2 a complètement transformé ma façon de créer du contenu. Le suivi IA est incroyable — on dirait qu'il y a un cameraman invisible."
+    },
+    {
+      "name": "Thomas R.",
+      "role": "Photographe",
+      "avatar": "TR",
+      "rating": 5,
+      "text": "Pour un drone de cette taille, la qualité d'image en 4K HDR est tout simplement bluffante. Le mode nuit fonctionne vraiment bien."
+    },
+    {
+      "name": "Sophie M.",
+      "role": "Athlète outdoor",
+      "avatar": "SM",
+      "rating": 5,
+      "text": "Je l'emporte partout en randonnée. Ultra léger, il décolle de ma paume et me suit sans que j'y pense. Libérateur."
+    },
+    {
+      "name": "Antoine B.",
+      "role": "Créateur de contenu",
+      "avatar": "AB",
+      "rating": 5,
+      "text": "Les QuickShots sont d'une qualité cinematographique. Les QuickShots se montent en quelques secondes. C'est de la magie pure."
+    },
+    {
+      "name": "Claire D.",
+      "role": "Vlogueuse lifestyle",
+      "avatar": "CD",
+      "rating": 5,
+      "text": "Passée du DJI Mini au Neo 2, je ne regrette absolument rien. L'autonomie est bien meilleure et le design est magnifique."
+    },
+    {
+      "name": "Lucas F.",
+      "role": "Voyageur",
+      "avatar": "LF",
+      "rating": 5,
+      "text": "Les 32 minutes d'autonomie et la résolution 4K en font mon compagnon de voyage idéal. Qualité pro dans un format pocket."
+    }
+  ]
+}

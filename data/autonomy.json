@@ -1,0 +1,14 @@
+{
+  "title": "Autonomie",
+  "subtitle": "Plus de temps pour créer.",
+  "batteryLife": "32 min",
+  "chargeTime": "45 min",
+  "fastCharge": "Oui",
+  "stats": [
+    { "value": "32", "unit": "min", "label": "Vol maximum" },
+    { "value": "45", "unit": "min", "label": "Charge rapide" },
+    { "value": "13", "unit": "km", "label": "Portée vidéo" },
+    { "value": "Level5", "unit": "", "label": "Résistance vent" }
+  ],
+  "note": "Batterie intelligente avec protection thermique et indication LED."
+}
