@@ -12,6 +12,7 @@ let lightboxIndex = 0;
 let gpsWatchId = null;
 let gpsMarkers = JSON.parse(localStorage.getItem('sv_gps_markers') || '[]');
 let importedPhotos = [];
+let hiddenPhotos = JSON.parse(localStorage.getItem('sv_hidden_photos') || '[]');
 
 /* ========== NAV ========== */
 function initNav() {
@@ -126,21 +127,46 @@ function buildGalleryItems(gallery, sorties) {
 
 function filterGallery() {
   const grid = document.getElementById('masonryGrid');
-  const filtered = currentFilter === 'all' ? allItems : allItems.filter(i => i.sortieId === currentFilter);
+  const visible = allItems.filter(i => !hiddenPhotos.includes(i.src));
+  const filtered = currentFilter === 'all' ? visible : visible.filter(i => i.sortieId === currentFilter);
   grid.innerHTML = filtered.map((item, idx) => `
-    <div class="masonry-item" data-index="${idx}">
+    <div class="masonry-item" data-index="${idx}" data-src="${item.src.substring(0, 80)}">
       ${item.type === 'video'
         ? `<video src="${item.src}" muted loop playsinline ${item.poster ? `poster="${item.poster}"` : ''}></video><div class="masonry-play">▶</div>`
         : `<img src="${item.src}" alt="${item.alt || ''}" loading="lazy" onerror="this.parentElement.style.display='none'">`
       }
       ${item.label ? `<div class="masonry-overlay"><span>${item.label}</span></div>` : ''}
+      <div class="masonry-delete" title="Appui long pour supprimer">✕</div>
     </div>
   `).join('');
 
   lightboxItems = filtered;
   grid.querySelectorAll('.masonry-item').forEach(el => {
     const idx = parseInt(el.dataset.index);
-    el.addEventListener('click', () => openLightbox(idx));
+    let pressTimer = null;
+    let didLongPress = false;
+
+    el.addEventListener('pointerdown', e => {
+      didLongPress = false;
+      pressTimer = setTimeout(() => {
+        didLongPress = true;
+        el.classList.add('deleting');
+      }, 500);
+    });
+    el.addEventListener('pointerup', () => clearTimeout(pressTimer));
+    el.addEventListener('pointerleave', () => clearTimeout(pressTimer));
+    el.addEventListener('pointermove', () => clearTimeout(pressTimer));
+
+    el.addEventListener('click', e => {
+      if (didLongPress || e.target.closest('.masonry-delete')) {
+        didLongPress = false;
+        const src = filtered[idx]?.src;
+        if (src) deleteGalleryPhoto(src, el);
+        return;
+      }
+      openLightbox(idx);
+    });
+
     const vid = el.querySelector('video');
     if (vid) {
       el.addEventListener('mouseenter', () => vid.play());
@@ -151,6 +177,38 @@ function filterGallery() {
   gsap.from(grid.querySelectorAll('.masonry-item'), {
     y: 30, opacity: 0, duration: 0.5, stagger: 0.05, ease: 'power2.out'
   });
+}
+
+function deleteGalleryPhoto(src, el) {
+  if (!confirm('Supprimer cette photo ?')) return;
+  el.style.opacity = '0';
+  el.style.transform = 'scale(0.8)';
+  el.style.transition = 'all 0.3s';
+
+  const customSorties = JSON.parse(localStorage.getItem('sv_custom_sorties') || '[]');
+  let found = false;
+  customSorties.forEach(s => {
+    if (s.photos) {
+      const before = s.photos.length;
+      s.photos = s.photos.filter(p => p.src !== src);
+      if (s.photos.length < before) found = true;
+    }
+    if (s.cover === src) { s.cover = null; found = true; }
+  });
+  if (found) {
+    localStorage.setItem('sv_custom_sorties', JSON.stringify(customSorties));
+    window._customSorties = customSorties;
+  }
+
+  hiddenPhotos.push(src);
+  try { localStorage.setItem('sv_hidden_photos', JSON.stringify(hiddenPhotos)); } catch {}
+
+  importedPhotos = importedPhotos.filter(p => p.src !== src);
+
+  setTimeout(() => {
+    allItems = allItems.filter(i => i.src !== src);
+    filterGallery();
+  }, 300);
 }
 
 /* ========== LIGHTBOX ========== */

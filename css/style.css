@@ -134,6 +134,10 @@ html.scroll-locked body { overflow: hidden; }
 .masonry-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 1rem; background: linear-gradient(transparent, rgba(0,0,0,0.7)); opacity: 0; transition: opacity 0.3s; }
 .masonry-item:hover .masonry-overlay { opacity: 1; }
 .masonry-overlay span { font-size: 0.8rem; color: rgba(255,255,255,0.8); }
+.masonry-delete { position: absolute; top: 0.5rem; right: 0.5rem; width: 28px; height: 28px; background: rgba(239,68,68,0.9); backdrop-filter: blur(8px); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.85rem; cursor: pointer; opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: none; }
+.masonry-item.deleting .masonry-delete { opacity: 1; pointer-events: all; transform: scale(1.1); }
+.masonry-item.deleting { outline: 2px solid rgba(239,68,68,0.6); outline-offset: -2px; }
+.masonry-item { transition: opacity 0.3s, transform 0.3s; }
 .masonry-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 48px; height: 48px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; opacity: 0; transition: opacity 0.3s; }
 .masonry-item:hover .masonry-play { opacity: 1; }
 
