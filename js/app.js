@@ -972,7 +972,8 @@ function initSortieForm(defaultSorties) {
   const photoImg = document.getElementById('sortiePhotoImg');
   const photoRemove = document.getElementById('sortiePhotoRemove');
 
-  let customSorties = JSON.parse(localStorage.getItem('sv_custom_sorties') || '[]');
+  let customSorties = [];
+  try { customSorties = JSON.parse(localStorage.getItem('sv_custom_sorties') || '[]'); } catch { customSorties = []; }
   let pendingPhotos = [];
 
   function openModal(sortie) {
@@ -1019,6 +1020,52 @@ function initSortieForm(defaultSorties) {
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 
+  function handleSubmit(e) {
+    if (e) e.preventDefault();
+    try {
+      const sortie = {
+        id: editId.value || 'custom-' + Date.now(),
+        titre: document.getElementById('sortieTitre').value.trim(),
+        date: document.getElementById('sortieDate').value,
+        lieu: document.getElementById('sortieLieu').value.trim(),
+        description: document.getElementById('sortieDesc').value.trim(),
+        stats: {
+          distance: document.getElementById('sortieDistance').value.trim() || '—',
+          duree: document.getElementById('sortieDuree').value.trim() || '—',
+          altitude: document.getElementById('sortieAltitude').value.trim() || '—'
+        },
+        cover: photoPreview.style.display !== 'none' ? photoImg.src : null,
+        photos: pendingPhotos,
+        custom: true
+      };
+      if (!sortie.titre || !sortie.date || !sortie.lieu) {
+        alert('Remplis au minimum le titre, la date et le lieu.');
+        return;
+      }
+      const idx = customSorties.findIndex(s => s.id === sortie.id);
+      if (idx >= 0) customSorties[idx] = sortie;
+      else customSorties.unshift(sortie);
+      try {
+        localStorage.setItem('sv_custom_sorties', JSON.stringify(customSorties));
+      } catch (err) {
+        alert('Espace de stockage insuffisant. Essayez sans photo.');
+        return;
+      }
+      window._customSorties = customSorties;
+      closeModal();
+      try {
+        refreshSortiesAndGallery(defaultSorties, customSorties);
+      } catch (err) {
+        console.error('refresh error:', err);
+      }
+    } catch (err) {
+      console.error('submit error:', err);
+      alert('Erreur lors de la sauvegarde: ' + err.message);
+    }
+  }
+
+  form.addEventListener('submit', handleSubmit);
+
   photoUpload.addEventListener('click', () => photoInput.click());
   photoInput.addEventListener('change', () => {
     Array.from(photoInput.files).forEach(file => {
@@ -1054,37 +1101,6 @@ function initSortieForm(defaultSorties) {
     photoPreview.style.display = 'none';
     photoUpload.style.display = '';
     photoInput.value = '';
-  });
-
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const sortie = {
-      id: editId.value || 'custom-' + Date.now(),
-      titre: document.getElementById('sortieTitre').value,
-      date: document.getElementById('sortieDate').value,
-      lieu: document.getElementById('sortieLieu').value,
-      description: document.getElementById('sortieDesc').value,
-      stats: {
-        distance: document.getElementById('sortieDistance').value || '—',
-        duree: document.getElementById('sortieDuree').value || '—',
-        altitude: document.getElementById('sortieAltitude').value || '—'
-      },
-      cover: photoPreview.style.display !== 'none' ? photoImg.src : null,
-      photos: pendingPhotos,
-      custom: true
-    };
-    const idx = customSorties.findIndex(s => s.id === sortie.id);
-    if (idx >= 0) customSorties[idx] = sortie;
-    else customSorties.unshift(sortie);
-    try {
-      localStorage.setItem('sv_custom_sorties', JSON.stringify(customSorties));
-    } catch (err) {
-      alert('Espace de stockage insuffisant. Essayez sans photo ou avec une photo plus petite.');
-      return;
-    }
-    closeModal();
-    window._customSorties = customSorties;
-    refreshSortiesAndGallery(defaultSorties, customSorties);
   });
 
   deleteBtn.addEventListener('click', () => {
