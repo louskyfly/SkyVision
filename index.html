@@ -29,7 +29,7 @@
       <div class="nav-links" id="navLinks">
         <div class="nav-bubble" id="navBubble"></div>
         <a href="#sorties" class="nav-link active">Sorties</a>
-        <a href="#decouvrir" class="nav-link">Decouvrir</a>
+        <a href="#decouvrir" class="nav-link">Envies</a>
         <a href="#gallery" class="nav-link">Galerie</a>
         <a href="#carte" class="nav-link">Carte</a>
         <a href="#outils" class="nav-link">Outils</a>
@@ -43,7 +43,7 @@
 
   <div class="mobile-menu" id="mobileMenu">
     <a href="#sorties" class="mobile-link">Sorties</a>
-    <a href="#decouvrir" class="mobile-link">Decouvrir</a>
+    <a href="#decouvrir" class="mobile-link">Envies</a>
     <a href="#gallery" class="mobile-link">Galerie</a>
     <a href="#carte" class="mobile-link">Carte</a>
     <a href="#outils" class="mobile-link">Outils</a>
@@ -101,28 +101,33 @@
   <section class="section" id="decouvrir">
     <div class="container">
       <div class="section-header">
-        <span class="section-label">Explore</span>
-        <h2 class="section-title">Decouvrir</h2>
-        <p class="section-subtitle">Swipe pour trouver ton prochain spot de vol</p>
+        <span class="section-label">Mes envies</span>
+        <h2 class="section-title">Lieux a visiter</h2>
+        <p class="section-subtitle">Les spots que je veux explorer en drone</p>
       </div>
-      <div class="swipe-container" id="swipeContainer">
-        <div class="swipe-empty" id="swipeEmpty" style="display:none">
-          <div class="swipe-empty-icon">🗺️</div>
-          <h3>Tous les lieux ont ete explores !</h3>
-          <p>Reviens plus tard pour decouvrir de nouveaux spots.</p>
-          <button class="btn btn-primary" id="swipeReset">Recommencer</button>
-        </div>
-        <div class="swipe-cards" id="swipeCards"></div>
-        <div class="swipe-actions">
-          <button class="swipe-btn swipe-nope" id="swipeNope" title="Passer">✕</button>
-          <button class="swipe-btn swipe-info" id="swipeInfo" title="Details">ℹ</button>
-          <button class="swipe-btn swipe-like" id="swipeLike" title="Ajouter a ma carte">♥</button>
-        </div>
-        <div class="swipe-counter" id="swipeCounter"></div>
+      <div class="envies-header">
+        <button class="btn btn-primary" id="envieAddBtn">+ Ajouter un lieu</button>
       </div>
-      <div class="swipe-saved" id="swipeSaved" style="display:none">
-        <h3>Lieux sauvegardes</h3>
-        <div class="swipe-saved-list" id="swipeSavedList"></div>
+      <div class="envies-list" id="enviesList"></div>
+      <div class="envies-empty" id="enviesEmpty">
+        <div class="envies-empty-icon">📍</div>
+        <h3>Aucun lieu pour l'instant</h3>
+        <p>Ajoute des spots que tu veux explorer !</p>
+      </div>
+
+      <div class="section-header" style="margin-top:4rem">
+        <span class="section-label">Mes pensees</span>
+        <h2 class="section-title">Bloc Note</h2>
+        <p class="section-subtitle">Notes, idees et rappels de vol</p>
+      </div>
+      <div class="notes-header">
+        <button class="btn btn-primary" id="noteAddBtn">+ Nouvelle note</button>
+      </div>
+      <div class="notes-list" id="notesList"></div>
+      <div class="notes-empty" id="notesEmpty">
+        <div class="notes-empty-icon">📝</div>
+        <h3>Aucune note</h3>
+        <p>Commence a ecrire tes idees !</p>
       </div>
     </div>
   </section>
@@ -195,6 +200,68 @@
         </div>
         <button type="submit" class="btn btn-primary btn-full" id="sortieSubmit">Enregistrer la sortie</button>
         <button type="button" class="btn btn-ghost btn-full" id="sortieDeleteBtn" style="display:none;margin-top:0.5rem;color:#ef4444">Supprimer cette sortie</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="sortie-modal" id="envieModal">
+    <div class="sortie-modal-inner">
+      <div class="sortie-modal-header">
+        <h3 id="envieModalTitle">Nouveau lieu</h3>
+        <button class="sortie-modal-close" id="envieModalClose">&times;</button>
+      </div>
+      <form id="envieForm" class="sortie-form">
+        <input type="hidden" id="envieEditId">
+        <div class="form-group">
+          <label class="form-label">Nom du lieu</label>
+          <input type="text" id="envieNom" class="form-input" placeholder="Ex: Cirque de Navacelles">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea id="envieDesc" class="form-input form-textarea" placeholder="Pourquoi je veux y aller..." rows="3"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Latitude</label>
+            <input type="text" id="envieLat" class="form-input" placeholder="43.7350">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Longitude</label>
+            <input type="text" id="envieLng" class="form-input" placeholder="3.5050">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Statut</label>
+          <select id="envieStatut" class="form-input">
+            <option value="a-visiter">A visiter</option>
+            <option value="planifie">Planifie</option>
+            <option value="visite">Visite</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="envieSubmit">Enregistrer</button>
+        <button type="button" class="btn btn-ghost btn-full" id="envieDeleteBtn" style="display:none;margin-top:0.5rem;color:#ef4444">Supprimer</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="sortie-modal" id="noteModal">
+    <div class="sortie-modal-inner">
+      <div class="sortie-modal-header">
+        <h3 id="noteModalTitle">Nouvelle note</h3>
+        <button class="sortie-modal-close" id="noteModalClose">&times;</button>
+      </div>
+      <form id="noteForm" class="sortie-form">
+        <input type="hidden" id="noteEditId">
+        <div class="form-group">
+          <label class="form-label">Titre</label>
+          <input type="text" id="noteTitre" class="form-input" placeholder="Ex: Checklist vol...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contenu</label>
+          <textarea id="noteContenu" class="form-input form-textarea" placeholder="Ecris ta note ici..." rows="8"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="noteSubmit">Enregistrer</button>
+        <button type="button" class="btn btn-ghost btn-full" id="noteDeleteBtn" style="display:none;margin-top:0.5rem;color:#ef4444">Supprimer</button>
       </form>
     </div>
   </div>

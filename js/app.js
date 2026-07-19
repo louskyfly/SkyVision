@@ -768,236 +768,240 @@ function initDJIImport() {
   }
 }
 
-/* ========== SWIPE DISCOVER ========== */
-function initSwipe(allLocations) {
-  const cards = document.getElementById('swipeCards');
-  const empty = document.getElementById('swipeEmpty');
-  const counter = document.getElementById('swipeCounter');
-  const saved = document.getElementById('swipeSaved');
-  const savedList = document.getElementById('swipeSavedList');
-  const nopeBtn = document.getElementById('swipeNope');
-  const likeBtn = document.getElementById('swipeLike');
-  const infoBtn = document.getElementById('swipeInfo');
-  const resetBtn = document.getElementById('swipeReset');
+/* ========== ENVIES ========== */
+function initEnvies() {
+  const list = document.getElementById('enviesList');
+  const empty = document.getElementById('enviesEmpty');
+  const addBtn = document.getElementById('envieAddBtn');
+  const modal = document.getElementById('envieModal');
+  const form = document.getElementById('envieForm');
+  const modalClose = document.getElementById('envieModalClose');
+  const modalTitle = document.getElementById('envieModalTitle');
+  const editIdInput = document.getElementById('envieEditId');
+  const deleteBtn = document.getElementById('envieDeleteBtn');
 
-  let savedIds = JSON.parse(localStorage.getItem('sv_saved_locations') || '[]');
-  let queue = allLocations.filter(l => !savedIds.includes(l.id));
-  let current = 0;
-  let startX = 0, startY = 0, dx = 0, isDragging = false;
-
-  const gradients = [
-    'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-    'linear-gradient(135deg, #0d1117 0%, #161b22 50%, #21262d 100%)',
-    'linear-gradient(135deg, #1b0a2a 0%, #2d1b4e 50%, #1a0a3e 100%)',
-    'linear-gradient(135deg, #0a192f 0%, #112240 50%, #233554 100%)',
-    'linear-gradient(135deg, #1a0000 0%, #2d1010 50%, #3d1a1a 100%)',
-    'linear-gradient(135deg, #001a1a 0%, #0d2b2b 50%, #1a3d3d 100%)',
-  ];
+  function getEnvies() { return JSON.parse(localStorage.getItem('sv_envies') || '[]'); }
+  function saveEnvies(d) { localStorage.setItem('sv_envies', JSON.stringify(d)); }
 
   function render() {
-    if (current >= queue.length) {
-      cards.innerHTML = '';
-      empty.style.display = '';
-      counter.textContent = '';
-      renderSaved();
-      return;
-    }
+    const envies = getEnvies();
+    if (!envies.length) { list.innerHTML = ''; empty.style.display = ''; return; }
     empty.style.display = 'none';
-    cards.innerHTML = '';
-    const remaining = queue.slice(current).reverse();
-    remaining.forEach((loc, ri) => {
-      const i = remaining.length - 1 - ri;
-      const card = document.createElement('div');
-      card.className = 'swipe-card' + (i > 0 ? ' behind' : '');
-      card.dataset.id = loc.id;
-      if (i === 0) {
-        const g = gradients[allLocations.indexOf(loc) % gradients.length];
-        card.innerHTML = `
-          <div class="swipe-card-stamp like">AJOUTER</div>
-          <div class="swipe-card-stamp nope">PASSER</div>
-          <div class="swipe-card-img">
-            <div class="swipe-card-gradient" style="background:${g}">
-              <span class="swipe-emoji">${loc.icone}</span>
-            </div>
+    list.innerHTML = envies.map(e => {
+      const icon = e.statut === 'visite' ? '✅' : e.statut === 'planifie' ? '📋' : '📍';
+      return `<div class="envie-card" data-id="${e.id}">
+        <div class="envie-card-icon">${icon}</div>
+        <div class="envie-card-body">
+          <div class="envie-card-name">${e.nom}</div>
+          ${e.desc ? `<div class="envie-card-desc">${e.desc}</div>` : ''}
+          <div class="envie-card-meta">
+            ${e.lat && e.lng ? `<span class="envie-card-coords">${parseFloat(e.lat).toFixed(4)}, ${parseFloat(e.lng).toFixed(4)}</span>` : ''}
+            <span class="envie-card-status ${e.statut}">${e.statut === 'a-visiter' ? 'A visiter' : e.statut === 'planifie' ? 'Planifie' : 'Visite'}</span>
           </div>
-          <div class="swipe-card-body">
-            <div class="swipe-card-cat">${loc.categorie}</div>
-            <div class="swipe-card-name">${loc.nom}</div>
-            <div class="swipe-card-desc">${loc.description}</div>
-            <div class="swipe-card-meta">${(loc.tags||[]).map(t => `<span class="swipe-card-tag">${t}</span>`).join('')}</div>
-            <div class="swipe-card-footer">
-              <span class="swipe-card-stat"><strong>${loc.difficulte}</strong> Difficulte</span>
-              <span class="swipe-card-stat"><strong>${loc.altitude_recommandee}</strong> Altitude</span>
-              <span class="swipe-card-stat"><strong>${loc.meilleure_periode}</strong></span>
-            </div>
-          </div>
-        `;
-      } else if (i <= 2) {
-        const g = gradients[allLocations.indexOf(loc) % gradients.length];
-        card.style.background = g;
-        card.style.borderColor = 'rgba(255,255,255,0.15)';
-        card.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:3rem;opacity:0.15">${loc.icone}</div>`;
-      }
-      const scale = i === 0 ? 1 : 1 - i * 0.06;
-      const translateY = i * 14;
-      card.style.transform = `scale(${scale}) translateY(${translateY}px)`;
-      card.style.zIndex = 100 - i;
-      if (i > 2) card.style.display = 'none';
-      cards.appendChild(card);
-    });
-    counter.textContent = `${current + 1} / ${queue.length}`;
-    if (current < queue.length) setupDrag(queue[current]);
-  }
-
-  function setupDrag(loc) {
-    const card = cards.querySelector('.swipe-card:last-child');
-    if (!card) return;
-
-    function onStart(e) {
-      isDragging = true;
-      startX = e.touches ? e.touches[0].clientX : e.clientX;
-      startY = e.touches ? e.touches[0].clientY : e.clientY;
-      card.style.transition = 'none';
-    }
-    function onMove(e) {
-      if (!isDragging) return;
-      dx = (e.touches ? e.touches[0].clientX : e.clientX) - startX;
-      const rotate = dx * 0.12;
-      const dy = Math.abs(dx) * 0.05;
-      card.style.transform = `translateX(${dx}px) rotate(${rotate}deg) translateY(${-dy}px)`;
-      const likeStamp = card.querySelector('.swipe-card-stamp.like');
-      const nopeStamp = card.querySelector('.swipe-card-stamp.nope');
-      if (dx > 40) {
-        likeStamp.style.opacity = Math.min(1, (dx - 40) / 80);
-        nopeStamp.style.opacity = 0;
-      } else if (dx < -40) {
-        nopeStamp.style.opacity = Math.min(1, (-dx - 40) / 80);
-        likeStamp.style.opacity = 0;
-      } else {
-        likeStamp.style.opacity = 0;
-        nopeStamp.style.opacity = 0;
-      }
-    }
-    function onEnd() {
-      if (!isDragging) return;
-      isDragging = false;
-      card.style.transition = 'transform 0.4s cubic-bezier(.22,1,.36,1)';
-      if (dx > 100) {
-        flyOut(card, 'right', loc);
-      } else if (dx < -100) {
-        flyOut(card, 'left', loc);
-      } else {
-        card.style.transform = '';
-        const stamps = card.querySelectorAll('.swipe-card-stamp');
-        stamps.forEach(s => s.style.opacity = 0);
-        dx = 0;
-      }
-    }
-
-    card.addEventListener('mousedown', onStart);
-    card.addEventListener('touchstart', onStart, { passive: true });
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('touchmove', onMove, { passive: true });
-    document.addEventListener('mouseup', onEnd);
-    document.addEventListener('touchend', onEnd);
-
-    card._cleanup = () => {
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('touchmove', onMove);
-      document.removeEventListener('mouseup', onEnd);
-      document.removeEventListener('touchend', onEnd);
-    };
-  }
-
-  function flyOut(card, dir, loc) {
-    if (card._cleanup) card._cleanup();
-    const x = dir === 'right' ? window.innerWidth : -window.innerWidth;
-    card.style.transition = 'transform 0.5s cubic-bezier(.22,1,.36,1), opacity 0.5s';
-    card.style.transform = `translateX(${x}px) rotate(${dir === 'right' ? 30 : -30}deg)`;
-    card.style.opacity = '0';
-    if (dir === 'right') {
-      savedIds.push(loc.id);
-      localStorage.setItem('sv_saved_locations', JSON.stringify(savedIds));
-    }
-    setTimeout(() => { current++; render(); }, 350);
-  }
-
-  function add(loc) {
-    if (current >= queue.length) return;
-    const card = cards.querySelector('.swipe-card:last-child');
-    if (card) flyOut(card, 'right', loc);
-  }
-
-  function skip() {
-    if (current >= queue.length) return;
-    const card = cards.querySelector('.swipe-card:last-child');
-    if (card) flyOut(card, 'left', queue[current]);
-  }
-
-  function renderSaved() {
-    if (savedIds.length === 0) { saved.style.display = 'none'; return; }
-    saved.style.display = '';
-    savedList.innerHTML = savedIds.map(id => {
-      const loc = allLocations.find(l => l.id === id);
-      if (!loc) return '';
-      return `<div class="swipe-saved-item">
-        <span class="saved-emoji">${loc.icone}</span>
-        <span class="saved-name">${loc.nom}</span>
-        <span class="saved-cat">${loc.categorie}</span>
-        <button class="saved-remove" data-id="${loc.id}" title="Retirer">✕</button>
+        </div>
+        <div class="envie-card-actions">
+          <button class="envie-card-btn edit" title="Modifier">✎</button>
+          <button class="envie-card-btn delete" title="Supprimer">✕</button>
+        </div>
       </div>`;
     }).join('');
-    savedList.querySelectorAll('.saved-remove').forEach(btn => {
-      btn.addEventListener('click', () => {
-        savedIds = savedIds.filter(i => i !== btn.dataset.id);
-        localStorage.setItem('sv_saved_locations', JSON.stringify(savedIds));
-        renderSaved();
-        addSavedMarkersToMap(allLocations);
+
+    list.querySelectorAll('.envie-card-btn.edit').forEach(btn => {
+      btn.addEventListener('click', ev => {
+        ev.stopPropagation();
+        const id = btn.closest('.envie-card').dataset.id;
+        openEdit(id);
+      });
+    });
+    list.querySelectorAll('.envie-card-btn.delete').forEach(btn => {
+      btn.addEventListener('click', ev => {
+        ev.stopPropagation();
+        const id = btn.closest('.envie-card').dataset.id;
+        if (confirm('Supprimer ce lieu ?')) {
+          saveEnvies(getEnvies().filter(e => e.id !== id));
+          render();
+        }
       });
     });
   }
 
-  if (likeBtn) likeBtn.addEventListener('click', () => { if (current < queue.length) add(queue[current]); });
-  if (nopeBtn) nopeBtn.addEventListener('click', () => { if (current < queue.length) skip(); });
-  if (infoBtn) infoBtn.addEventListener('click', () => {
-    if (current < queue.length) {
-      const loc = queue[current];
-      alert(`${loc.icone} ${loc.nom}\n\n${loc.description}\n\nConseils: ${loc.conseils}\nPeriode: ${loc.meilleure_periode}\nAltitude: ${loc.altitude_recommandee}`);
+  function openAdd() {
+    modalTitle.textContent = 'Nouveau lieu';
+    editIdInput.value = '';
+    form.reset();
+    deleteBtn.style.display = 'none';
+    modal.classList.add('open');
+  }
+
+  function openEdit(id) {
+    const envie = getEnvies().find(e => e.id === id);
+    if (!envie) return;
+    modalTitle.textContent = 'Modifier le lieu';
+    editIdInput.value = id;
+    document.getElementById('envieNom').value = envie.nom;
+    document.getElementById('envieDesc').value = envie.desc || '';
+    document.getElementById('envieLat').value = envie.lat || '';
+    document.getElementById('envieLng').value = envie.lng || '';
+    document.getElementById('envieStatut').value = envie.statut || 'a-visiter';
+    deleteBtn.style.display = '';
+    modal.classList.add('open');
+  }
+
+  addBtn.addEventListener('click', openAdd);
+  modalClose.addEventListener('click', () => modal.classList.remove('open'));
+  modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const nom = document.getElementById('envieNom').value.trim();
+    if (!nom) { alert('Ajoute un nom !'); return; }
+    const envies = getEnvies();
+    const editId = editIdInput.value;
+    const data = {
+      id: editId || 'envie-' + Date.now(),
+      nom,
+      desc: document.getElementById('envieDesc').value.trim(),
+      lat: document.getElementById('envieLat').value.trim(),
+      lng: document.getElementById('envieLng').value.trim(),
+      statut: document.getElementById('envieStatut').value
+    };
+    if (editId) {
+      const idx = envies.findIndex(e => e.id === editId);
+      if (idx >= 0) envies[idx] = data;
+    } else {
+      envies.push(data);
     }
-  });
-  if (resetBtn) resetBtn.addEventListener('click', () => {
-    savedIds = [];
-    localStorage.removeItem('sv_saved_locations');
-    queue = [...allLocations];
-    current = 0;
-    empty.style.display = 'none';
+    saveEnvies(envies);
+    modal.classList.remove('open');
     render();
   });
 
+  deleteBtn.addEventListener('click', () => {
+    const id = editIdInput.value;
+    if (id && confirm('Supprimer ce lieu ?')) {
+      saveEnvies(getEnvies().filter(e => e.id !== id));
+      modal.classList.remove('open');
+      render();
+    }
+  });
+
   render();
-  renderSaved();
-  addSavedMarkersToMap(allLocations);
 }
 
-function addSavedMarkersToMap(allLocations) {
-  if (!window._mainMap) return;
-  if (window._savedMapMarkers) window._savedMapMarkers.forEach(m => window._mainMap.removeLayer(m));
-  window._savedMapMarkers = [];
-  const savedIds = JSON.parse(localStorage.getItem('sv_saved_locations') || '[]');
-  savedIds.forEach(id => {
-    const loc = allLocations.find(l => l.id === id);
-    if (!loc) return;
-    const marker = L.marker([loc.lat, loc.lng], {
-      icon: L.divIcon({
-        className: 'lieu-marker',
-        html: `<div style="width:32px;height:32px;background:#22c55e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3)">${loc.icone}</div>`,
-        iconSize: [32, 32],
-        iconAnchor: [16, 16]
-      })
-    }).addTo(window._mainMap);
-    marker.bindPopup(`<div class="zone-popup"><h4>⭐ ${loc.nom}</h4><p>${loc.description}</p><span class="zone-tag" style="background:#22c55e">${loc.categorie}</span></div>`);
-    window._savedMapMarkers.push(marker);
+/* ========== BLOC NOTE ========== */
+function initNotes() {
+  const list = document.getElementById('notesList');
+  const empty = document.getElementById('notesEmpty');
+  const addBtn = document.getElementById('noteAddBtn');
+  const modal = document.getElementById('noteModal');
+  const form = document.getElementById('noteForm');
+  const modalClose = document.getElementById('noteModalClose');
+  const modalTitle = document.getElementById('noteModalTitle');
+  const editIdInput = document.getElementById('noteEditId');
+  const deleteBtn = document.getElementById('noteDeleteBtn');
+
+  function getNotes() { return JSON.parse(localStorage.getItem('sv_notes') || '[]'); }
+  function saveNotes(d) { localStorage.setItem('sv_notes', JSON.stringify(d)); }
+
+  function render() {
+    const notes = getNotes();
+    if (!notes.length) { list.innerHTML = ''; empty.style.display = ''; return; }
+    empty.style.display = 'none';
+    list.innerHTML = notes.map(n => {
+      const date = n.date ? new Date(n.date).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '';
+      return `<div class="note-card" data-id="${n.id}">
+        <div class="note-card-top">
+          <div class="note-card-title">${n.titre || 'Sans titre'}</div>
+          <div class="note-card-actions">
+            <button class="envie-card-btn edit" title="Modifier">✎</button>
+            <button class="envie-card-btn delete" title="Supprimer">✕</button>
+          </div>
+        </div>
+        <div class="note-card-date">${date}</div>
+        <div class="note-card-content">${n.contenu || ''}</div>
+      </div>`;
+    }).join('');
+
+    list.querySelectorAll('.note-card .envie-card-btn.edit').forEach(btn => {
+      btn.addEventListener('click', ev => {
+        ev.stopPropagation();
+        const id = btn.closest('.note-card').dataset.id;
+        openEdit(id);
+      });
+    });
+    list.querySelectorAll('.note-card .envie-card-btn.delete').forEach(btn => {
+      btn.addEventListener('click', ev => {
+        ev.stopPropagation();
+        const id = btn.closest('.note-card').dataset.id;
+        if (confirm('Supprimer cette note ?')) {
+          saveNotes(getNotes().filter(n => n.id !== id));
+          render();
+        }
+      });
+    });
+
+    list.querySelectorAll('.note-card').forEach(card => {
+      card.addEventListener('click', () => openEdit(card.dataset.id));
+    });
+  }
+
+  function openAdd() {
+    modalTitle.textContent = 'Nouvelle note';
+    editIdInput.value = '';
+    form.reset();
+    deleteBtn.style.display = 'none';
+    modal.classList.add('open');
+  }
+
+  function openEdit(id) {
+    const note = getNotes().find(n => n.id === id);
+    if (!note) return;
+    modalTitle.textContent = 'Modifier la note';
+    editIdInput.value = id;
+    document.getElementById('noteTitre').value = note.titre || '';
+    document.getElementById('noteContenu').value = note.contenu || '';
+    deleteBtn.style.display = '';
+    modal.classList.add('open');
+  }
+
+  addBtn.addEventListener('click', openAdd);
+  modalClose.addEventListener('click', () => modal.classList.remove('open'));
+  modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const titre = document.getElementById('noteTitre').value.trim();
+    const contenu = document.getElementById('noteContenu').value.trim();
+    if (!contenu) { alert('Ecris quelque chose !'); return; }
+    const notes = getNotes();
+    const editId = editIdInput.value;
+    const data = {
+      id: editId || 'note-' + Date.now(),
+      titre: titre || 'Sans titre',
+      contenu,
+      date: new Date().toISOString()
+    };
+    if (editId) {
+      const idx = notes.findIndex(n => n.id === editId);
+      if (idx >= 0) notes[idx] = data;
+    } else {
+      notes.unshift(data);
+    }
+    saveNotes(notes);
+    modal.classList.remove('open');
+    render();
   });
+
+  deleteBtn.addEventListener('click', () => {
+    const id = editIdInput.value;
+    if (id && confirm('Supprimer cette note ?')) {
+      saveNotes(getNotes().filter(n => n.id !== id));
+      modal.classList.remove('open');
+      render();
+    }
+  });
+
+  render();
 }
 
 /* ========== SORTIE FORM ========== */
@@ -1451,13 +1455,12 @@ function initTransitions() {
 
 /* ========== LOAD ========== */
 async function load() {
-  const [config, sorties, gallery, drone, zonesData, lieuxData, meteoData, alertesData] = await Promise.all([
+  const [config, sorties, gallery, drone, zonesData, meteoData, alertesData] = await Promise.all([
     API.load('config.json'),
     API.load('sorties.json'),
     API.load('gallery.json'),
     API.load('drone.json'),
     API.load('flight-zones.json'),
-    API.load('interesting-locations.json'),
     API.load('meteo.json'),
     API.load('weather-alerts.json')
   ]);
@@ -1505,10 +1508,8 @@ async function load() {
   initDJIAutoImport();
   initNavHeroBehavior();
   initSortieForm(sorties ? sorties.sorties : []);
-
-  if (lieuxData && lieuxData.length) {
-    initSwipe(lieuxData);
-  }
+  initEnvies();
+  initNotes();
 
   setTimeout(() => { initAnimations(); initLenis(); }, 100);
 }
